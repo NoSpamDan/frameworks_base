@@ -4563,8 +4563,6 @@ public final class Settings {
         public static final String STATUSBAR_SHOW_WIFI_ACTIVITY = "statusbar_show_wifi_activity";
 
         /** @hide */
-        private static final Validator STATUSBAR_SHOW_WIFI_ACTIVITY_VALIDATOR = BOOLEAN_VALIDATOR;
-
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
@@ -4867,7 +4865,6 @@ public final class Settings {
                     USE_BOTTOM_GESTURE_NAVIGATION_VALIDATOR);
             VALIDATORS.put(ONE_HAND_MODE_ENABLED, ONE_HAND_MODE_ENABLED_VALIDATOR);
             VALIDATORS.put(MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD, MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD_VALIDATOR);
-            VALIDATORS.put(STATUSBAR_SHOW_WIFI_ACTIVITY, STATUSBAR_SHOW_WIFI_ACTIVITY_VALIDATOR);
         }
 
         /**
