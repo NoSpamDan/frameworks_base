@@ -711,6 +711,8 @@ public class StatusBar extends SystemUI implements DemoMode,
     private boolean mVibrateOnOpening;
     private VibratorHelper mVibratorHelper;
 
+    private boolean mLockscreenMediaMetadata;
+
     @Override
     public void start() {
         mGroupManager = Dependency.get(NotificationGroupManager.class);
@@ -1775,7 +1777,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
 
         Drawable artworkDrawable = null;
-        if (mediaMetadata != null) {
+        if (mediaMetadata != null && mLockscreenMediaMetadata) {
             Bitmap artworkBitmap = mediaMetadata.getBitmap(MediaMetadata.METADATA_KEY_ART);
             if (artworkBitmap == null) {
                 artworkBitmap = mediaMetadata.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART);
@@ -5457,6 +5459,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_TILE_TITLE_VISIBILITY),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_MEDIA_METADATA),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -5484,12 +5489,16 @@ public class StatusBar extends SystemUI implements DemoMode,
                     uri.equals(Settings.System.getUriFor(Settings.System.QS_COLUMNS_LANDSCAPE)) ||
                     uri.equals(Settings.System.getUriFor(Settings.System.QS_TILE_TITLE_VISIBILITY))) {
                 updateQsPanelResources();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_MEDIA_METADATA))) {
+                setLockscreenMediaMetadata();
             }
         }
 
         public void update() {
             setStatusBarWindowViewOptions();
             updateQsPanelResources();
+            setLockscreenMediaMetadata();
         }
     }
 
@@ -5503,6 +5512,11 @@ public class StatusBar extends SystemUI implements DemoMode,
         if (mQSPanel != null) {
             mQSPanel.updateResources();
         }
+    }
+
+    private void setLockscreenMediaMetadata() {
+        mLockscreenMediaMetadata = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.LOCKSCREEN_MEDIA_METADATA, 0, UserHandle.USER_CURRENT) == 1;
     }
 
     private final BroadcastReceiver mBannerActionBroadcastReceiver = new BroadcastReceiver() {
