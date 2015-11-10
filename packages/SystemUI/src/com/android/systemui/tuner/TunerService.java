@@ -31,7 +31,10 @@ import com.android.systemui.Dependency;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.SystemUIDialog;
 
+
 public abstract class TunerService {
+
+    public static final String ACTION_CLEAR = "com.android.systemui.action.CLEAR_TUNER";
 
     public abstract void clearAll();
     public abstract void destroy();

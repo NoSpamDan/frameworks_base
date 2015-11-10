@@ -18,8 +18,11 @@ package com.android.systemui.tuner;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.os.Build;
+import android.app.FragmentTransaction;
+import android.content.DialogInterface;
+import android.database.ContentObserver;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v14.preference.PreferenceFragment;
@@ -53,11 +56,12 @@ public class TunerFragment extends PreferenceFragment {
     public static final String SETTING_SEEN_TUNER_WARNING = "seen_tuner_warning";
 
     private static final String WARNING_TAG = "tuner_warning";
-    private static final String[] DEBUG_ONLY = new String[] {
-            "nav_bar",
-            "lockscreen",
-            "picture_in_picture",
-    };
+
+    private static final int MENU_REMOVE = Menu.FIRST + 1;
+
+    private final SettingObserver mSettingObserver = new SettingObserver();
+
+    private SwitchPreference mBatteryPct;
 
     private static final int MENU_REMOVE = Menu.FIRST + 1;
 
@@ -165,5 +169,58 @@ public class TunerFragment extends PreferenceFragment {
                 return true;*/
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateBatteryPct() {
+        mBatteryPct.setOnPreferenceChangeListener(null);
+        mBatteryPct.setChecked(System.getInt(getContext().getContentResolver(),
+                SHOW_PERCENT_SETTING, 0) != 0);
+        mBatteryPct.setOnPreferenceChangeListener(mBatteryPctChange);
+    }
+
+    private final class SettingObserver extends ContentObserver {
+        public SettingObserver() {
+            super(new Handler());
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri, int userId) {
+            super.onChange(selfChange, uri, userId);
+            updateBatteryPct();
+        }
+    }
+
+    private final OnPreferenceChangeListener mBatteryPctChange = new OnPreferenceChangeListener() {
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
+            final boolean v = (Boolean) newValue;
+            MetricsLogger.action(getContext(), MetricsLogger.TUNER_BATTERY_PERCENTAGE, v);
+            System.putInt(getContext().getContentResolver(), SHOW_PERCENT_SETTING, v ? 1 : 0);
+            return true;
+        }
+    };
+
+    private final Tunable mQsPaging = new Tunable() {
+        @Override
+        public void onTuningChanged(String key, String newValue) {
+            // Only enable QS rearranging when paging is off, because its very broken.
+            mQsTuner.setEnabled(newValue == null || Integer.parseInt(newValue) == 0);
+        }
+    };
+
+    public static class TunerWarningFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            return new AlertDialog.Builder(getContext())
+                    .setTitle(R.string.tuner_warning_title)
+                    .setMessage(R.string.tuner_warning)
+                    .setPositiveButton(R.string.got_it, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Settings.Secure.putInt(getContext().getContentResolver(),
+                                    SETTING_SEEN_TUNER_WARNING, 1);
+                        }
+                    }).show();
+        }
     }
 }
