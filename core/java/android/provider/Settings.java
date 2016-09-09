@@ -7800,7 +7800,6 @@ public final class Settings {
         public static final int INCALL_BACK_BUTTON_BEHAVIOR_NONE = 0x0;
 
         /**
-         * INCALL_BACK_BUTTON_BEHAVIOR value for "hang up".
          * @hide
          */
         public static final int INCALL_BACK_BUTTON_BEHAVIOR_HANGUP = 0x1;
@@ -9027,6 +9026,40 @@ public final class Settings {
         /** @hide */
         private static final Validator VOLUME_LINK_NOTIFICATION_VALIDATOR =
                 BOOLEAN_VALIDATOR;
+
+
+
+        /**
+         * Whether the device should pulse on pick up gesture.
+         * @hide
+         */
+        public static final String DOZE_PULSE_ON_PICK_UP = "doze_pulse_on_pick_up";
+
+        private static final Validator DOZE_PICK_UP_GESTURE_VALIDATOR = BOOLEAN_VALIDATOR;
+
+        /**
+         * Whether the device should pulse on double tap gesture.
+         * @hide
+         */
+        public static final String DOZE_PULSE_ON_DOUBLE_TAP = "doze_pulse_on_double_tap";
+
+        private static final Validator DOZE_DOUBLE_TAP_GESTURE_VALIDATOR = BOOLEAN_VALIDATOR;
+
+        /**
+         * Whether the device should respond to the SLPI tap gesture.
+         * @hide
+         */
+        public static final String DOZE_TAP_SCREEN_GESTURE = "doze_tap_gesture";
+
+        private static final Validator DOZE_TAP_SCREEN_GESTURE_VALIDATOR = BOOLEAN_VALIDATOR;
+
+        /**
+         * Gesture that wakes up the display, showing the ambient version of the status bar.
+         * @hide
+         */
+        public static final String DOZE_WAKE_SCREEN_GESTURE = "doze_wake_screen_gesture";
+
+        private static final Validator DOZE_WAKE_SCREEN_GESTURE_VALIDATOR = BOOLEAN_VALIDATOR;
 
         /**
          * This are the settings to be backed up.
