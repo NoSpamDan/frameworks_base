@@ -20,7 +20,6 @@ package com.android.systemui.candy;
 import android.content.Context;
 import android.content.Intent;
 
-import com.android.internal.util.candy.PackageUtils;
 import com.android.internal.util.candy.CandyUtils;
 
 

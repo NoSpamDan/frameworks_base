@@ -75,6 +75,7 @@ public class QSFragment extends Fragment implements QS, CommandQueue.Callbacks, 
     protected QuickStatusBarHeader mHeader;
     private QSCustomizer mQSCustomizer;
     protected QSPanel mQSPanel;
+    protected QuickQSPanel mQuickQSPanel;
     private QSDetail mQSDetail;
     private boolean mListening;
     private QSContainerImpl mContainer;

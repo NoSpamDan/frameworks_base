@@ -42,6 +42,8 @@
 
     <!-- QS tile height -->
     <dimen name="qs_tile_height_wo_label">48dp</dimen>
+	<!-- Sets a custom extra padding for the QS icons and statusbar date -->
+	<dimen name="qs_items_padding">8dp</dimen>
 
     <!-- Floating action button -->
     <dimen name="floating_action_button_height">54dp</dimen>
@@ -59,4 +61,7 @@
     <!-- The width/height of the charging indicator view on keyguard. -->
     <dimen name="keyguard_charging_indication_height">64dp</dimen>
     <dimen name="keyguard_charging_indication_width">32dp</dimen>
+
+    <!-- Custom Carrier Label -->
+    <dimen name="status_bar_carrier_height">14dp</dimen>
 </resources>

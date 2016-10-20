@@ -73,6 +73,10 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     private LinearLayout mCenterClockLayout;
     private final Handler mHandler = new Handler();
 
+    // custom carrier label
+    private View mCustomCarrierLabel;
+    private int mShowCarrierLabel;
+
     private class SettingsObserver extends ContentObserver {
        SettingsObserver(Handler handler) {
            super(handler);
@@ -81,6 +85,9 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
        void observe() {
          mContentResolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_CLOCK_STYLE),
+                    false, this, UserHandle.USER_ALL);
+         mContentResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_SHOW_CARRIER),
                     false, this, UserHandle.USER_ALL);
        }
 
@@ -129,6 +136,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         mClockView = mStatusBar.findViewById(R.id.clock);
         mCenterClockLayout = (LinearLayout) mStatusBar.findViewById(R.id.center_clock_layout);
         mRightClock = mStatusBar.findViewById(R.id.right_clock);
+        mCustomCarrierLabel = mStatusBar.findViewById(R.id.statusbar_carrier_text);
         updateSettings(false);
         showSystemIconArea(false);
         showClock(false);
@@ -195,18 +203,12 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         if ((diff1 & DISABLE_NOTIFICATION_ICONS) != 0) {
             if ((state1 & DISABLE_NOTIFICATION_ICONS) != 0) {
                 hideNotificationIconArea(animate);
+                hideCarrierName(animate);
                 animateHide(mClockView, animate);
             } else {
                 showNotificationIconArea(animate);
-            }
-        }
-        // The clock may have already been hidden, but we might want to shift its
-        // visibility to GONE from INVISIBLE or vice versa
-        if ((diff1 & DISABLE_CLOCK) != 0 || mClockView.getVisibility() != clockHiddenMode()) {
-            if ((state1 & DISABLE_CLOCK) != 0) {
-                hideClock(animate);
-            } else {
-                showClock(animate);
+                updateClockStyle(animate);
+                showCarrierName(animate);
             }
         }
     }
@@ -297,6 +299,18 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         }
     }
 
+    public void hideCarrierName(boolean animate) {
+        if (mCustomCarrierLabel != null) {
+            animateHide(mCustomCarrierLabel, animate, true);
+        }
+    }
+
+    public void showCarrierName(boolean animate) {
+        if (mCustomCarrierLabel != null) {
+            setCarrierLabel(animate);
+        }
+    }
+
     /**
      * Animate a view to INVISIBLE or GONE
      */
@@ -377,7 +391,11 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     public void updateSettings(boolean animate) {
         mClockStyle = Settings.System.getIntForUser(mContentResolver,
                 Settings.System.STATUSBAR_CLOCK_STYLE, 0, UserHandle.USER_CURRENT);
+        mShowCarrierLabel = Settings.System.getIntForUser(
+                getContext().getContentResolver(), Settings.System.STATUS_BAR_SHOW_CARRIER, 1,
+                UserHandle.USER_CURRENT);
         updateClockStyle(animate);
+        setCarrierLabel(animate);
     }
 
     private void updateClockStyle(boolean animate) {
@@ -385,6 +403,14 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
             animateHide(mClockView, animate);
         } else {
             animateShow(mClockView, animate);
+        }
+    }
+
+    private void setCarrierLabel(boolean animate) {
+        if (mShowCarrierLabel == 2 || mShowCarrierLabel == 3) {
+            animateShow(mCustomCarrierLabel, animate);
+        } else {
+            animateHide(mCustomCarrierLabel, animate);
         }
     }
 }
