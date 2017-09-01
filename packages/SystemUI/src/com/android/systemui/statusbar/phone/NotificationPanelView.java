@@ -551,13 +551,8 @@ public class NotificationPanelView extends PanelView implements
                 R.dimen.keyguard_indication_bottom_padding);
         mQsNotificationTopPadding = getResources().getDimensionPixelSize(
                 R.dimen.qs_notification_padding);
-        mShelfHeight = getResources().getDimensionPixelSize(R.dimen.notification_shelf_height);
-        mDarkIconSize = getResources().getDimensionPixelSize(
-                R.dimen.status_bar_icon_drawing_size_dark);
         mStatusBarHeaderHeight = getResources().getDimensionPixelSize(
                 com.android.internal.R.dimen.status_bar_height);
-        mHeadsUpInset = mStatusBarHeaderHeight + getResources().getDimensionPixelSize(
-                R.dimen.heads_up_status_bar_padding);
     }
 
     /**
@@ -3482,9 +3477,4 @@ public class NotificationPanelView extends PanelView implements
     public void updateDoubleTapToSleep(boolean doubleTapToSleepEnabled) {
         mDoubleTapToSleepEnabled = doubleTapToSleepEnabled;
     }
-
-    public void updateDoubleTapToSleep(boolean doubleTapToSleepEnabled) {
-        mDoubleTapToSleepEnabled = doubleTapToSleepEnabled;
-    }
-
 }

@@ -314,8 +314,4 @@ public class DragDownHelper implements Gefingerpoken {
     public void updateDoubleTapToSleep(boolean updateDoubleTapToSleep) {
         mDoubleTapToSleepEnabled = updateDoubleTapToSleep;
     }
-
-    public void updateDoubleTapToSleep(boolean updateDoubleTapToSleep) {
-        mDoubleTapToSleepEnabled = updateDoubleTapToSleep;
-    }
 }
