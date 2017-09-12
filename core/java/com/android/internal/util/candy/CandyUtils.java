@@ -19,6 +19,7 @@ package com.android.internal.util.candy;
 import android.Manifest;
 import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -42,6 +43,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.os.RemoteException;
+import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.os.Vibrator;
@@ -63,12 +65,18 @@ import com.android.internal.statusbar.IStatusBarService;
 
 import java.util.Locale;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
+import static android.content.Context.VIBRATOR_SERVICE;
+
 public class CandyUtils {
 
     private static int sDeviceType = -1;
     private static final int DEVICE_PHONE = 0;
     private static final int DEVICE_HYBRID = 1;
     private static final int DEVICE_TABLET = 2;
+
+    public static final String INTENT_SCREENSHOT = "action_handler_screenshot";
+    public static final String INTENT_REGION_SCREENSHOT = "action_handler_region_screenshot";
 
     private static IStatusBarService mStatusBarService = null;
 
@@ -93,6 +101,7 @@ public class CandyUtils {
                 return false;
             }
         }
+        return true;
     }
 
     public static boolean isChineseLanguage() {
@@ -144,26 +153,6 @@ public class CandyUtils {
         ConnectivityManager cm = (ConnectivityManager)context.getSystemService(
                 Context.CONNECTIVITY_SERVICE);
         return (cm.isNetworkSupported(ConnectivityManager.TYPE_MOBILE) == false);
-    }
-
-     // Check to see if a package is installed
-    public static boolean isPackageInstalled(Context context, String pkg, boolean ignoreState) {
-        if (pkg != null) {
-            try {
-                PackageInfo pi = context.getPackageManager().getPackageInfo(pkg, 0);
-                if (!pi.applicationInfo.enabled && !ignoreState) {
-                    return false;
-                }
-            } catch (NameNotFoundException e) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public static boolean isPackageInstalled(Context context, String pkg) {
-        return isPackageInstalled(context, pkg, true);
     }
 
     public static String batteryTemperature(Context context, Boolean ForC) {
@@ -367,18 +356,6 @@ public class CandyUtils {
         int state = enabled ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
         pm.setComponentEnabledSetting(componentName, state, PackageManager.DONT_KILL_APP);
-    }
-
-    // Clear notifications
-    public static void clearAllNotifications() {
-        IStatusBarService service = getStatusBarService();
-        if (service != null) {
-            try {
-                service.onClearAllNotifications(ActivityManager.getCurrentUser());
-            } catch (RemoteException e) {
-                // do nothing.
-            }
-        }
     }
 
     // Toggle notifications panel
