@@ -182,4 +182,8 @@
 
     <!-- Tuner StatusBar blacklist -->
     <string name="tuner_cellular_title">Mobile</string>
+
+    <!-- Lockscreen icon hide config -->
+    <string name="lockscreen_default">Default</string>
+    <string name="lockscreen_hidden">None</string>
 </resources>
