@@ -266,6 +266,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         mActivityIntentHelper = new ActivityIntentHelper(getContext());
         updateLeftAffordance();
         updateIndicationAreaPadding();
+        updateRightAffordance();
     }
 
     @Override
@@ -342,9 +343,10 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         if (state.isVisible) {
             if (state.drawable != mRightAffordanceView.getDrawable()
                     || state.tint != mRightAffordanceView.shouldTint()) {
-                mRightAffordanceView.setImageDrawable(state.drawable, state.tint);
+                mRightAffordanceView.setImageDrawable(state.drawable, state.tint,
+                        state.isDefaultButton ? false : true);
+                mRightAffordanceView.setContentDescription(state.contentDescription);
             }
-            mRightAffordanceView.setContentDescription(state.contentDescription);
         }
     }
 
@@ -361,6 +363,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         mUserSetupComplete = userSetupComplete;
         updateCameraVisibility();
         updateLeftAffordanceIcon();
+        updateRightAffordanceIcon();
     }
 
     protected Intent getRightIntent() {
@@ -422,10 +425,11 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         if (state.isVisible) {
             if (state.drawable != mLeftAffordanceView.getDrawable()
                     || state.tint != mLeftAffordanceView.shouldTint()) {
-                mLeftAffordanceView.setImageDrawable(state.drawable, state.tint);
+                mLeftAffordanceView.setImageDrawable(state.drawable, state.tint,
+                        state.isDefaultButton ? false : true);
+                mLeftAffordanceView.setContentDescription(state.contentDescription);
             }
-            mLeftAffordanceView.setContentDescription(state.contentDescription);
-	}
+	    }
     }
 
     private boolean hasInDisplayFingerprint() {
@@ -782,11 +786,17 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         updateRightAffordanceIcon();
     }
 
+    public void onKeyguardShowingChanged() {
+        updateLeftAffordance();
+        updateRightAffordance();
+        inflateCameraPreview();
+    }
+
     private void setRightButton(IntentButton button) {
         mRightButton = button;
-        updateRightAffordanceIcon();
         updateCameraVisibility();
         inflateCameraPreview();
+        updateRightAffordance();
     }
 
     private void setLeftButton(IntentButton button) {
@@ -803,6 +813,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
 
         updateCameraVisibility();
         updateLeftAffordanceIcon();
+        updateRightAffordanceIcon();
 
         if (dozing) {
             mOverlayContainer.setVisibility(INVISIBLE);
