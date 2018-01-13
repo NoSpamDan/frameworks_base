@@ -527,18 +527,9 @@ class GlobalScreenrecord {
                 PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
 
         final Resources r = mContext.getResources();
-
-        final String totalTime = String.format("%02d:%02dm",
-                TimeUnit.MILLISECONDS.toMinutes(mRecordingTotalTime),
-                TimeUnit.MILLISECONDS.toSeconds(mRecordingTotalTime) -
-                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(mRecordingTotalTime))
-        );
-        final long size = mFileSize / 1000000;
-
         Notification.Builder builder = new Notification.Builder(mContext, NotificationChannels.SCREENRECORDS)
             .setTicker(r.getString(R.string.screenrecord_notif_final_ticker))
-            .setContentTitle(r.getString(R.string.screenrecord_notif_completed) + " ("
-                    + totalTime + ", " + size + "MB" + ")")
+            .setContentTitle(r.getString(R.string.screenrecord_notif_completed))
             .setSmallIcon(R.drawable.ic_capture_video)
             .setWhen(System.currentTimeMillis())
             .setAutoCancel(true);
@@ -547,13 +538,6 @@ class GlobalScreenrecord {
                 r.getString(com.android.internal.R.string.share), shareAction)
             .addAction(R.drawable.ic_screenshot_delete,
                 r.getString(com.android.internal.R.string.delete), deleteAction);
-
-        Intent launchIntent = new Intent(Intent.ACTION_VIEW);
-        launchIntent.setDataAndType(uri, "video/mp4");
-        launchIntent.setFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        builder.setContentIntent(PendingIntent.getActivity(mContext, 0, launchIntent, 0));
-
         Notification notif = builder.build();
         mNotificationManager.notify(SCREENRECORD_NOTIFICATION_ID, notif);
 
