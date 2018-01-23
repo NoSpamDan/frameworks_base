@@ -256,7 +256,7 @@ class GlobalScreenrecord {
                 mRecordingStartTime = System.currentTimeMillis();
                 break;
             case WindowManager.SCREEN_RECORD_HIGH_QUALITY:
-                mNotifContent = base + " - 720x1280 @8Mbps";
+                mNotifContent = base + " - 1080x1920 @8Mbps";
                 mRecordingStartTime = System.currentTimeMillis();
                 break;
             case -1:
@@ -269,8 +269,8 @@ class GlobalScreenrecord {
             .setContentTitle(mNotifContent)
             .setSmallIcon(R.drawable.ic_capture_video)
             .setWhen(mRecordingStartTime)
-            .setOngoing(true)
-            .setUsesChronometer(true);
+            .setUsesChronometer(true)
+            .setOngoing(true);
 
         Intent stopIntent = new Intent(mContext, TakeScreenrecordService.class)
             .setAction(TakeScreenrecordService.ACTION_STOP);
@@ -527,9 +527,18 @@ class GlobalScreenrecord {
                 PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
 
         final Resources r = mContext.getResources();
+
+        final String totalTime = String.format("%02d:%02dm",
+                TimeUnit.MILLISECONDS.toMinutes(mRecordingTotalTime),
+                TimeUnit.MILLISECONDS.toSeconds(mRecordingTotalTime) -
+                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(mRecordingTotalTime))
+        );
+        final long size = mFileSize / 1000000;
+
         Notification.Builder builder = new Notification.Builder(mContext, NotificationChannels.SCREENRECORDS)
             .setTicker(r.getString(R.string.screenrecord_notif_final_ticker))
-            .setContentTitle(r.getString(R.string.screenrecord_notif_completed))
+            .setContentTitle(r.getString(R.string.screenrecord_notif_completed) + " - "
+                    + r.getString(R.string.screenrecord_notif_duration) + " " + totalTime + ", " + size + "MB")
             .setSmallIcon(R.drawable.ic_capture_video)
             .setWhen(System.currentTimeMillis())
             .setAutoCancel(true);
