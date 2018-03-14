@@ -378,9 +378,17 @@ public class KeyguardIndicationController implements StateListener,
                         mTextView.switchIndication(indication);
                     }
                 } else {
-                    String percentage = NumberFormat.getPercentInstance()
-                            .format(mBatteryLevel / 100f);
-                    mTextView.switchIndication(percentage);
+                    // Use the high voltage symbol ⚡ (u26A1 unicode) but prevent the system
+                    boolean showAmbientBattery = Settings.System.getIntForUser(mContext.getContentResolver(),
+                            Settings.System.AMBIENT_BATTERY_PERCENT, 0, UserHandle.USER_CURRENT) != 0;
+                    if (showAmbientBattery) {
+                        String bolt = "\u26A1\uFE0E";
+                        CharSequence chargeIndicator = (mPowerPluggedIn ? (bolt + " ") : "") +
+                                NumberFormat.getPercentInstance().format(mBatteryLevel / 100f);
+                        mTextView.switchIndication(chargeIndicator);
+                    } else {
+                        mTextView.switchIndication(null);
+                    }
                 }
                 return;
             }
@@ -510,10 +518,14 @@ public class KeyguardIndicationController implements StateListener,
                            ? R.string.keyguard_indication_dash_charging_time
                            : R.string.keyguard_plugged_in_dash_charging;
                    break;
-               case KeyguardUpdateMonitor.BatteryStatus.CHARGING_WARP:
-                    chargingId = hasChargingTime
-                            ? R.string.keyguard_indication_warp_charging_time
-                            : R.string.keyguard_plugged_in_warp_charging;
+               case KeyguardUpdateMonitor.BatteryStatus.CHARGING_WARP:
+
+                    chargingId = hasChargingTime
+
+                            ? R.string.keyguard_indication_warp_charging_time
+
+                            : R.string.keyguard_plugged_in_warp_charging;
+
                   break;
             }
         } else {
