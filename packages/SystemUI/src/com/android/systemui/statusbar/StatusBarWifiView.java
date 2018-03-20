@@ -23,18 +23,13 @@ import static com.android.systemui.statusbar.policy.DarkIconDispatcher.getTint;
 import static com.android.systemui.statusbar.policy.DarkIconDispatcher.isInArea;
 import static com.android.systemui.statusbar.policy.DarkIconDispatcher.getDarkIntensity;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
-import android.os.UserHandle;
-import android.provider.Settings;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -54,14 +49,13 @@ import com.android.systemui.statusbar.policy.DarkIconDispatcher.DarkReceiver;
 /**
  * Start small: StatusBarWifiView will be able to layout from a WifiIconState
  */
-public class StatusBarWifiView extends FrameLayout implements DarkReceiver,
+public class StatusBarWifiView extends FrameLayout  implements DarkReceiver,
         StatusIconDisplayable {
     private static final String TAG = "StatusBarWifiView";
 
     /// Used to show etc dots
     private StatusBarIconView mDotView;
-    /// Contains the main icon layout
-    private LinearLayout mWifiGroup;
+
     private ImageView mWifiIcon;
     private StatusBarInoutContainer mInoutContainer;
     private View mSignalSpacer;
@@ -253,7 +247,6 @@ public class StatusBarWifiView extends FrameLayout implements DarkReceiver,
     }
 
     private void initViewState() {
-        setContentDescription(mState.contentDescription);
         if (mState.resId >= 0) {
             NeutralGoodDrawable drawable = NeutralGoodDrawable.create(
                     mLightContext, mDarkContext, mState.resId);
