@@ -3452,6 +3452,12 @@ public class ActivityStackSupervisor extends ConfigurationContainer implements D
            mPerfBoost.perfHint(BoostFramework.VENDOR_HINT_FIRST_LAUNCH_BOOST, packageName, -1, BoostFramework.Launch.BOOST_V1);
            mPerfSendTapHint = true;
        }
+       if (mPerfPack == null) {
+           mPerfPack = new BoostFramework();
+       }
+       if (mPerfPack != null) {
+           mPerfPack.perfHint(BoostFramework.VENDOR_HINT_FIRST_LAUNCH_BOOST, packageName, -1, BoostFramework.Launch.BOOST_V2);
+       }
     }
 
     ActivityRecord findTaskLocked(ActivityRecord r, int displayId) {
