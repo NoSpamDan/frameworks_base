@@ -4676,7 +4676,7 @@ public final class Settings {
         private static final Validator DOUBLE_TAP_SLEEP_LOCKSCREEN_VALIDATOR =
                 BOOLEAN_VALIDATOR;
 
-	/**
+	    /**
          * Whether the proximity sensor will adjust call to speaker
          */
         public static final String PROXIMITY_AUTO_SPEAKER = "proximity_auto_speaker";
@@ -4855,6 +4855,24 @@ public final class Settings {
          * @hide
          */
         public static final String GESTURE_TWO_FINGER_SWIPE = "gesture_two_finger_swipe";
+
+        /**
+         * Whether user can swap the order of the Alert Slider.
+         * * Whether user can invert the order of the Alert Slider.
+         * 0: Default
+         * 1: Inverted
+         * @hide
+         */
+        public static final String ALERT_SLIDER_ORDER = "alert_slider_order";
+
+        /**
+         * Preferred silent mode for Alert Slider..
+         * 0: Alarms only.
+         * 1: Total silence
+         * @hide
+         */
+        public static final String ALERT_SLIDER_SILENT_MODE = "alert_slider_silent_mode";
+
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
