@@ -69,7 +69,6 @@ public class StatusBarSignalPolicy implements NetworkControllerImpl.SignalCallba
     private boolean mBlockMobile;
     private boolean mBlockWifi;
     private boolean mBlockEthernet;
-    private boolean mActivityEnabled;
     private boolean mForceBlockWifi;
     private boolean mBlockRoaming;
     private boolean mBlockVpn;
@@ -162,8 +161,8 @@ public class StatusBarSignalPolicy implements NetworkControllerImpl.SignalCallba
             String statusLabel) {
 
         boolean visible = statusIcon.visible && !mBlockWifi;
-        boolean in = activityIn && mActivityEnabled && visible;
-        boolean out = activityOut && mActivityEnabled && visible;
+        boolean in = activityIn && visible;
+        boolean out = activityOut && visible;
 
         WifiIconState newState = mWifiIconState.copy();
 
@@ -213,9 +212,9 @@ public class StatusBarSignalPolicy implements NetworkControllerImpl.SignalCallba
         state.typeId = statusType;
         state.contentDescription = statusIcon.contentDescription;
         state.typeContentDescription = typeContentDescription;
-        state.roaming = roaming;
-        state.activityIn = activityIn && mActivityEnabled;
-        state.activityOut = activityOut && mActivityEnabled;
+        state.roaming = roaming && !mBlockRoaming;
+        state.activityIn = activityIn;
+        state.activityOut = activityOut;
 
         // Always send a copy to maintain value type semantics
         mIconController.setMobileIcons(mSlotMobile, MobileIconState.copyStates(mMobileStates));
