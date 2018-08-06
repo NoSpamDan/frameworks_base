@@ -502,6 +502,7 @@ public class StatusBar extends SystemUI implements DemoMode,
     LinearLayout mStatusBarContent;
     // Other views that need hiding for the notification ticker
     View mCenterClockLayout;
+    View mLeftClock;
     private int mClockLocation;
 
     // expanded notifications
@@ -1257,8 +1258,9 @@ public class StatusBar extends SystemUI implements DemoMode,
                     mStatusBarView.setPanel(mNotificationPanel);
                     mStatusBarView.setScrimController(mScrimController);
                     mStatusBarView.setBouncerShowing(mBouncerShowing);
+                    mLeftClock = mStatusBarView.findViewById(R.id.left_clock);
+                    mCenterClockLayout = (LinearLayout) mStatusBarView.findViewById(R.id.center_clock_layout);
                     mStatusBarContent = (LinearLayout) mStatusBarView.findViewById(R.id.status_bar_contents);
-                    mCenterClockLayout = mStatusBarView.findViewById(R.id.center_clock_layout);
                     setAreThereNotifications();
                     checkBarModes();
                 }).getFragmentManager()
@@ -4168,6 +4170,10 @@ public class StatusBar extends SystemUI implements DemoMode,
                 mCenterClockLayout.setVisibility(View.GONE);
                 mCenterClockLayout.startAnimation(loadAnim(true, null));
             }
+            if (mLeftClock != null && mClockLocation == 2) {
+                mLeftClock.setVisibility(View.GONE);
+                mLeftClock.startAnimation(loadAnim(true, null));
+            }
             if (mTickerView != null) {
                 mTickerView.setVisibility(View.VISIBLE);
                 mTickerView.startAnimation(loadAnim(false, null));
@@ -4181,6 +4187,10 @@ public class StatusBar extends SystemUI implements DemoMode,
             if (mCenterClockLayout != null && mClockLocation == 1) {
                 mCenterClockLayout.setVisibility(View.VISIBLE);
                 mCenterClockLayout.startAnimation(loadAnim(false, null));
+            }
+            if (mLeftClock != null && mClockLocation == 2) {
+                mLeftClock.setVisibility(View.VISIBLE);
+                mLeftClock.startAnimation(loadAnim(false, null));
             }
             if (mTickerView != null) {
                 mTickerView.setVisibility(View.GONE);
@@ -4197,6 +4207,10 @@ public class StatusBar extends SystemUI implements DemoMode,
             if (mCenterClockLayout != null && mClockLocation == 1) {
                 mCenterClockLayout.setVisibility(View.VISIBLE);
                 mCenterClockLayout.startAnimation(loadAnim(false, null));
+            }
+            if (mLeftClock != null && mClockLocation == 2) {
+                mLeftClock.setVisibility(View.VISIBLE);
+                mLeftClock.startAnimation(loadAnim(false, null));
             }
             if (mTickerView != null) {
                 mTickerView.setVisibility(View.GONE);
