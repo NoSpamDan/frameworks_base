@@ -22,6 +22,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
@@ -32,6 +33,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewPropertyAnimator;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout.LayoutParams;
 
@@ -40,14 +42,20 @@ import com.android.systemui.Interpolators;
 import com.android.systemui.R;
 import com.android.systemui.R.id;
 import com.android.systemui.SysUiServiceProvider;
+import com.android.systemui.candy.SystemUIUtils;
+import com.android.systemui.candy.xFallView.views.XFallView;
 import com.android.systemui.plugins.qs.QS;
 import com.android.systemui.qs.customize.QSCustomizer;
 import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.phone.NotificationsQuickSettingsContainer;
 import com.android.systemui.statusbar.policy.RemoteInputQuickSettingsDisabler;
 import com.android.systemui.statusbar.stack.StackStateAnimator;
+import com.android.systemui.tuner.TunerService;
+import com.android.systemui.tuner.TunerService.Tunable;
 
-public class QSFragment extends Fragment implements QS, CommandQueue.Callbacks {
+import java.util.Calendar;
+
+public class QSFragment extends Fragment implements QS, CommandQueue.Callbacks, Tunable {
     private static final String TAG = "QS";
     private static final boolean DEBUG = false;
     private static final String EXTRA_EXPANDED = "expanded";
@@ -77,7 +85,19 @@ public class QSFragment extends Fragment implements QS, CommandQueue.Callbacks {
     private RemoteInputQuickSettingsDisabler mRemoteInputQuickSettingsDisabler =
             Dependency.get(RemoteInputQuickSettingsDisabler.class);
 
+<<<<<<< HEAD
     private boolean mSecureExpandDisabled;
+=======
+    private View mFunImage;
+    private View mFunImageContainer;
+    private XFallView mXFallView;
+    private boolean mForceHideFun;
+    private boolean mForceShowFun;
+    private ViewPropertyAnimator mFunAnimation;
+
+    private static final String QS_SHOW_FUN = "qs_show_fun";
+    private static final String QS_FORCE_SHOW_FUN = "qs_force_show_fun";
+>>>>>>> 61e8afb0436... SystemUI: add handling of special features
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -94,7 +114,9 @@ public class QSFragment extends Fragment implements QS, CommandQueue.Callbacks {
         mHeader = view.findViewById(R.id.header);
         mFooter = view.findViewById(R.id.qs_footer);
         mContainer = view.findViewById(id.quick_settings_container);
-
+        mFunImage = view.findViewById(R.id.qs_fun_image);
+        mFunImageContainer = view.findViewById(R.id.qs_fun_image_container);
+        mXFallView = view.findViewById(R.id.qs_fun_background);
         mQSDetail.setQsPanel(mQSPanel, mHeader, (View) mFooter);
         mQSAnimator = new QSAnimator(this,
                 mHeader.findViewById(R.id.quick_qs_panel), mQSPanel);
@@ -113,11 +135,15 @@ public class QSFragment extends Fragment implements QS, CommandQueue.Callbacks {
             mQSCustomizer.restoreInstanceState(savedInstanceState);
         }
         SysUiServiceProvider.getComponent(getContext(), CommandQueue.class).addCallbacks(this);
+        final TunerService tunerService = Dependency.get(TunerService.class);
+        tunerService.addTunable(this, QS_SHOW_FUN);
+        tunerService.addTunable(this, QS_FORCE_SHOW_FUN);
     }
 
     @Override
     public void onDestroyView() {
         SysUiServiceProvider.getComponent(getContext(), CommandQueue.class).removeCallbacks(this);
+        Dependency.get(TunerService.class).removeTunable(this);
         super.onDestroyView();
     }
 
@@ -287,6 +313,15 @@ public class QSFragment extends Fragment implements QS, CommandQueue.Callbacks {
         mHeader.setListening(listening);
         mFooter.setListening(listening);
         mQSPanel.setListening(mListening && mQsExpanded);
+        if (listening) {
+            showFunImage();
+        } else {
+            mFunImageContainer.setVisibility(View.GONE);
+            mXFallView.stopFall();
+            if (mFunAnimation != null) {
+                mFunAnimation.cancel();
+            }
+        }
     }
 
     @Override
@@ -458,4 +493,93 @@ public class QSFragment extends Fragment implements QS, CommandQueue.Callbacks {
             updateQsState();
         }
     };
+<<<<<<< HEAD
+=======
+
+    public QuickQSPanel getQuickQsPanel() {
+        return mQuickQSPanel;
+    }
+
+    private void showFunImage() {
+        if (!isFunEnabled()) {
+            mFunImageContainer.setVisibility(View.GONE);
+            return;
+        }
+        mFunImageContainer.setVisibility(View.VISIBLE);
+        if (!mQsExpanded) {
+            mFunImage.setVisibility(View.VISIBLE);
+            mFunImage.setTranslationX(0);
+            mFunAnimation = mFunImage.animate()
+                .translationX(mQSPanel.getWidth() - mFunImage.getWidth())
+                .setInterpolator(Interpolators.LINEAR)
+                .setStartDelay(0)
+                .setDuration(5000)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mFunImage.setVisibility(View.GONE);
+                    }
+                });
+            mFunAnimation.start();
+        }
+        mXFallView.startFall();
+        mXFallView.animate()
+            .setDuration(500)
+            .alpha(1)
+            .start();
+    }
+
+    private boolean isFunEnabled() {
+        if (!SystemUIUtils.isFunEnabled()) {
+            return false;
+        }
+        if(SystemUIUtils.isXMasFunEnabled()) {
+            if (mForceHideFun) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            if (mForceShowFun) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        if (QS_SHOW_FUN.equals(key)) {
+            mForceHideFun = newValue != null && Integer.parseInt(newValue) == 0;
+        }
+        if (QS_FORCE_SHOW_FUN.equals(key)) {
+            mForceShowFun = newValue != null && Integer.parseInt(newValue) == 1;
+        }
+        if (isFunEnabled()) {
+            mXFallView.setOnLongClickListener(new View.OnLongClickListener(){
+                @Override
+                public boolean onLongClick(View v) {
+                    if (!mKeyguardShowing) {
+                        SystemUIUtils.startXMasFun(getContext());
+                    }
+                    return true;
+                }
+            });
+            mXFallView.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    final MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.ho_ho_ho);
+                    mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp){
+                            mp.release();
+                        }
+                    });
+                    mp.start();
+                }
+            });
+        }
+    }
+>>>>>>> 61e8afb0436... SystemUI: add handling of special features
 }
