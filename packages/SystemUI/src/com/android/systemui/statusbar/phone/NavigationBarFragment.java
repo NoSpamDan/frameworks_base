@@ -1400,14 +1400,6 @@ Navigator.OnVerticalChangedListener, KeyguardMonitor.Callback, NotificationMedia
     }
 
     @Override
-    public void leftInLandscapeChanged(boolean isLeft) {
-        mLeftInLandscape = isLeft;
-        if (mNavigationBarView != null) {
-            mNavigationBarView.setLeftInLandscape(isLeft);
-        }
-    }
-
-    @Override
     public void screenPinningStateChanged(boolean enabled) {
         mScreenPinningEnabled = enabled;
         changeNavigator();
@@ -1433,20 +1425,6 @@ Navigator.OnVerticalChangedListener, KeyguardMonitor.Callback, NotificationMedia
         if (mNeedsBarRefresh) {
             changeNavigator();
             mNeedsBarRefresh = false;
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        mIsAttached = false;
-        mNavigationBarView.dispose();
-        super.onDetach();
-    }
-
-    @Override
-    public void onMediaUpdated(boolean playing) {
-        if (mNavigationBarView != null) {
-            mNavigationBarView.setMediaPlaying(playing);
         }
     }
 
