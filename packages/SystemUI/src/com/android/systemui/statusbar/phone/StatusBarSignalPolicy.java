@@ -482,7 +482,7 @@ public class StatusBarSignalPolicy implements NetworkControllerImpl.SignalCallba
         private static List<MobileIconState> copyStates(List<MobileIconState> inStates) {
             ArrayList<MobileIconState> outStates = new ArrayList<>();
             for (MobileIconState state : inStates) {
-                MobileIconState copy = new MobileIconState(state.subId);
+            MobileIconState copy = new MobileIconState(state.subId);
                 state.copyTo(copy);
                 outStates.add(copy);
             }
