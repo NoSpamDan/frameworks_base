@@ -22,6 +22,7 @@ import static com.android.systemui.statusbar.StatusBarIconView.STATE_ICON;
 import static com.android.systemui.statusbar.policy.DarkIconDispatcher.getTint;
 import static com.android.systemui.statusbar.policy.DarkIconDispatcher.isInArea;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Rect;
