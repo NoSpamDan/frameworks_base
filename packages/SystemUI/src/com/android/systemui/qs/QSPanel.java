@@ -22,6 +22,7 @@ import static com.android.systemui.qs.tileimpl.QSTileImpl.getColorForState;
 import android.annotation.Nullable;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.ContentResolver;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.metrics.LogMaker;
