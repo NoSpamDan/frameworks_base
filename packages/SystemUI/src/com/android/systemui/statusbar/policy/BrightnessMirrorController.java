@@ -31,6 +31,7 @@ import com.android.systemui.qs.QSPanel;
 import com.android.systemui.tuner.TunerService;
 import com.android.systemui.tuner.TunerService.Tunable;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.FrameLayout;
 
 import com.android.internal.util.Preconditions;
@@ -61,9 +62,9 @@ public class BrightnessMirrorController
     private boolean mAutoBrightnessEnabled;
     private boolean mAutoBrightnessRight;
 
-
-    public BrightnessMirrorController(StatusBarWindowView statusBarWindow,
+    public BrightnessMirrorController(Context context, StatusBarWindowView statusBarWindow,
             @NonNull Consumer<Boolean> visibilityCallback) {
+        mContext = context;
         mStatusBarWindow = statusBarWindow;
         mBrightnessMirror = statusBarWindow.findViewById(R.id.brightness_mirror);
         mNotificationPanel = statusBarWindow.findViewById(R.id.notification_panel);
@@ -214,5 +215,4 @@ public class BrightnessMirrorController
         view.setVisibility(newValue == null || Integer.parseInt(newValue) != 0
                 ? View.VISIBLE : View.GONE);
     }
->>>>>>> eade7259cdc... Brightness QS: more user options
 }
