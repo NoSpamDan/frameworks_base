@@ -44,6 +44,7 @@ import com.android.systemui.R.id;
 import com.android.systemui.SysUiServiceProvider;
 import com.android.systemui.candy.SystemUIUtils;
 import com.android.systemui.candy.xFallView.views.XFallView;
+import com.android.systemui.candy.GifImageView;
 import com.android.systemui.plugins.qs.QS;
 import com.android.systemui.qs.customize.QSCustomizer;
 import com.android.systemui.statusbar.CommandQueue;
@@ -85,19 +86,17 @@ public class QSFragment extends Fragment implements QS, CommandQueue.Callbacks, 
     private RemoteInputQuickSettingsDisabler mRemoteInputQuickSettingsDisabler =
             Dependency.get(RemoteInputQuickSettingsDisabler.class);
 
-<<<<<<< HEAD
     private boolean mSecureExpandDisabled;
-=======
+
     private View mFunImage;
     private View mFunImageContainer;
-    private XFallView mXFallView;
+    private GifImageView mFunBgImage;
     private boolean mForceHideFun;
     private boolean mForceShowFun;
     private ViewPropertyAnimator mFunAnimation;
 
     private static final String QS_SHOW_FUN = "qs_show_fun";
     private static final String QS_FORCE_SHOW_FUN = "qs_force_show_fun";
->>>>>>> 61e8afb0436... SystemUI: add handling of special features
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -116,7 +115,7 @@ public class QSFragment extends Fragment implements QS, CommandQueue.Callbacks, 
         mContainer = view.findViewById(id.quick_settings_container);
         mFunImage = view.findViewById(R.id.qs_fun_image);
         mFunImageContainer = view.findViewById(R.id.qs_fun_image_container);
-        mXFallView = view.findViewById(R.id.qs_fun_background);
+        mFunBgImage = view.findViewById(R.id.qs_fun_background);
         mQSDetail.setQsPanel(mQSPanel, mHeader, (View) mFooter);
         mQSAnimator = new QSAnimator(this,
                 mHeader.findViewById(R.id.quick_qs_panel), mQSPanel);
@@ -317,7 +316,6 @@ public class QSFragment extends Fragment implements QS, CommandQueue.Callbacks, 
             showFunImage();
         } else {
             mFunImageContainer.setVisibility(View.GONE);
-            mXFallView.stopFall();
             if (mFunAnimation != null) {
                 mFunAnimation.cancel();
             }
@@ -493,8 +491,6 @@ public class QSFragment extends Fragment implements QS, CommandQueue.Callbacks, 
             updateQsState();
         }
     };
-<<<<<<< HEAD
-=======
 
     public QuickQSPanel getQuickQsPanel() {
         return mQuickQSPanel;
@@ -506,34 +502,14 @@ public class QSFragment extends Fragment implements QS, CommandQueue.Callbacks, 
             return;
         }
         mFunImageContainer.setVisibility(View.VISIBLE);
-        if (!mQsExpanded) {
-            mFunImage.setVisibility(View.VISIBLE);
-            mFunImage.setTranslationX(0);
-            mFunAnimation = mFunImage.animate()
-                .translationX(mQSPanel.getWidth() - mFunImage.getWidth())
-                .setInterpolator(Interpolators.LINEAR)
-                .setStartDelay(0)
-                .setDuration(5000)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mFunImage.setVisibility(View.GONE);
-                    }
-                });
-            mFunAnimation.start();
-        }
-        mXFallView.startFall();
-        mXFallView.animate()
-            .setDuration(500)
-            .alpha(1)
-            .start();
+        mFunBgImage.setGifImageResource(R.raw.fireworks);
     }
 
     private boolean isFunEnabled() {
         if (!SystemUIUtils.isFunEnabled()) {
             return false;
         }
-        if(SystemUIUtils.isXMasFunEnabled()) {
+        if(SystemUIUtils.isNewYearsFunEnabled()) {
             if (mForceHideFun) {
                 return false;
             } else {
@@ -557,19 +533,19 @@ public class QSFragment extends Fragment implements QS, CommandQueue.Callbacks, 
             mForceShowFun = newValue != null && Integer.parseInt(newValue) == 1;
         }
         if (isFunEnabled()) {
-            mXFallView.setOnLongClickListener(new View.OnLongClickListener(){
+            mFunBgImage.setOnLongClickListener(new View.OnLongClickListener(){
                 @Override
                 public boolean onLongClick(View v) {
                     if (!mKeyguardShowing) {
-                        SystemUIUtils.startXMasFun(getContext());
+                        SystemUIUtils.startsNewYearsFun(getContext());
                     }
                     return true;
                 }
             });
-            mXFallView.setOnClickListener(new View.OnClickListener(){
+            mFunBgImage.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    final MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.ho_ho_ho);
+                    final MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.fireworks_sound);
                     mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                         @Override
                         public void onCompletion(MediaPlayer mp){
@@ -581,5 +557,4 @@ public class QSFragment extends Fragment implements QS, CommandQueue.Callbacks, 
             });
         }
     }
->>>>>>> 61e8afb0436... SystemUI: add handling of special features
 }
