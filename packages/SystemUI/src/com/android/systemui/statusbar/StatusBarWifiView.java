@@ -30,6 +30,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -248,6 +249,7 @@ public class StatusBarWifiView extends FrameLayout  implements DarkReceiver,
     }
 
     private void initViewState() {
+        setContentDescription(mState.contentDescription);
         if (mState.resId >= 0) {
             NeutralGoodDrawable drawable = NeutralGoodDrawable.create(
                     mLightContext, mDarkContext, mState.resId);
