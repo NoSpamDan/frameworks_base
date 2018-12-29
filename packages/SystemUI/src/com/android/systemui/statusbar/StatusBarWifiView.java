@@ -55,7 +55,8 @@ public class StatusBarWifiView extends FrameLayout  implements DarkReceiver,
 
     /// Used to show etc dots
     private StatusBarIconView mDotView;
-
+    /// Contains the main icon layout
+    private LinearLayout mWifiGroup;
     private ImageView mWifiIcon;
     private StatusBarInoutContainer mInoutContainer;
     private View mSignalSpacer;
