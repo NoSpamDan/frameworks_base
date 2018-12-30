@@ -39,6 +39,7 @@ import java.lang.reflect.Method;
 /** @hide */
 public class BoostFramework {
 
+    private static final boolean DEBUG = false;
     private static final String TAG = "BoostFramework";
     private static final String PERFORMANCE_JAR = "/system/framework/QPerformance.jar";
     private static final String PERFORMANCE_CLASS = "com.qualcomm.qti.Performance";
@@ -55,8 +56,7 @@ public class BoostFramework {
     private static Method sReleaseHandlerFunc = null;
     private static Method sFeedbackFunc = null;
 
-    private static int sIopv2 =
-            SystemProperties.getInt("vendor.iop.enable_uxe", 0);
+    private static int sIopv2 = -1;
     private static Method sIOPStart = null;
     private static Method sIOPStop  = null;
     private static Method sUXEngineEvents  = null;
@@ -88,6 +88,16 @@ public class BoostFramework {
     //feedback hints
     public static final int VENDOR_FEEDBACK_WORKLOAD_TYPE = 0x00001601;
     public static final int VENDOR_FEEDBACK_LAUNCH_END_POINT = 0x00001602;
+
+    //UXE Events and Triggers
+    public static final int UXE_TRIGGER = 1;
+    public static final int UXE_EVENT_BINDAPP = 2;
+    public static final int UXE_EVENT_DISPLAYED_ACT = 3;
+    public static final int UXE_EVENT_KILL = 4;
+    public static final int UXE_EVENT_GAME  = 5;
+    public static final int UXE_EVENT_SUB_LAUNCH = 6;
+    public static final int UXE_EVENT_PKG_UNINSTALL = 7;
+    public static final int UXE_EVENT_PKG_INSTALL = 8;
 
     //UXE Events and Triggers
     public static final int UXE_TRIGGER = 1;
@@ -139,7 +149,7 @@ public class BoostFramework {
             }
         }
         catch(Exception e) {
-            Log.e(TAG,"BoostFramework() : Exception_2 = " + e);
+           if (DEBUG) Log.e(TAG,"BoostFramework() : Exception_2 = " + e);
         }
     }
 
@@ -158,7 +168,7 @@ public class BoostFramework {
             }
         }
         catch(Exception e) {
-            Log.e(TAG,"BoostFramework() : Exception_3 = " + e);
+           if (DEBUG) Log.e(TAG,"BoostFramework() : Exception_3 = " + e);
         }
     }
 
@@ -177,7 +187,7 @@ public class BoostFramework {
             }
         }
         catch(Exception e) {
-            Log.e(TAG,"BoostFramework() : Exception_5 = " + e);
+           if (DEBUG) Log.e(TAG,"BoostFramework() : Exception_5 = " + e);
         }
     }
 
@@ -208,7 +218,7 @@ public class BoostFramework {
                     argClasses = new Class[] {};
                     sIOPStop =  sPerfClass.getDeclaredMethod("perfIOPrefetchStop", argClasses);
 
-                    if (sIopv2 == 1) {
+                    try {
                         argClasses = new Class[] {int.class, int.class, String.class, int.class};
                         sUXEngineEvents =  sPerfClass.getDeclaredMethod("perfUXEngine_events",
                                                                           argClasses);
@@ -216,12 +226,14 @@ public class BoostFramework {
                         argClasses = new Class[] {int.class};
                         sUXEngineTrigger =  sPerfClass.getDeclaredMethod("perfUXEngine_trigger",
                                                                            argClasses);
+                    } catch (Exception e) {
+                       if (DEBUG) Log.i(TAG, "BoostFramework() : Exception_4 = PreferredApps not supported");
                     }
 
                     sIsLoaded = true;
                 }
                 catch(Exception e) {
-                    Log.e(TAG,"BoostFramework() : Exception_1 = " + e);
+                   if (DEBUG) Log.e(TAG,"BoostFramework() : Exception_1 = " + e);
                 }
                 // Load UXE Class now Adding new try/catch block to avoid
                 // any interference with Qperformance
@@ -275,7 +287,7 @@ public class BoostFramework {
                 ret = (int)retVal;
             }
         } catch(Exception e) {
-            Log.e(TAG,"Exception " + e);
+            if (DEBUG) Log.e(TAG,"Exception " + e);
         }
         return ret;
     }
@@ -299,7 +311,7 @@ public class BoostFramework {
                 ret = (int)retVal;
             }
         } catch(Exception e) {
-            Log.e(TAG,"Exception " + e);
+            if (DEBUG) Log.e(TAG,"Exception " + e);
         }
         return ret;
     }
@@ -313,7 +325,7 @@ public class BoostFramework {
                 ret = (int)retVal;
             }
         } catch(Exception e) {
-            Log.e(TAG,"Exception " + e);
+           if (DEBUG) Log.e(TAG,"Exception " + e);
         }
         return ret;
     }
@@ -356,13 +368,61 @@ public class BoostFramework {
             sIopv2 = SystemProperties.getInt("vendor.iop.enable_uxe", 0);
         }
         try {
+            if (sPerfHintFunc != null) {
+                Object retVal = sPerfHintFunc.invoke(mPerf, hint, userDataStr, userData1, userData2);
+                ret = (int)retVal;
+            }
+        } catch(Exception e) {
+           if (DEBUG) Log.e(TAG,"Exception " + e);
+        }
+        return ret;
+    }
+
+/** @hide */
+    public int perfIOPrefetchStart(int pid, String pkgName, String codePath) {
+        int ret = -1;
+        try {
+            Object retVal = sIOPStart.invoke(mPerf, pid, pkgName, codePath);
+            ret = (int) retVal;
+        } catch (Exception e) {
+           if (DEBUG) Log.e(TAG, "Exception " + e);
+        }
+        try {
+            Object retVal = sUxIOPStart.invoke(mUxPerf, pid, pkgName, codePath);
+            ret = (int) retVal;
+        } catch (Exception e) {
+           if (DEBUG) Log.e(TAG, "Ux Perf Exception " + e);
+        }
+
+        return ret;
+    }
+
+/** @hide */
+    public int perfIOPrefetchStop() {
+        int ret = -1;
+        try {
+            Object retVal = sIOPStop.invoke(mPerf);
+            ret = (int) retVal;
+        } catch (Exception e) {
+           if (DEBUG) Log.e(TAG, "Exception " + e);
+        }
+        return ret;
+    }
+
+/** @hide */
+    public int perfUXEngine_events(int opcode, int pid, String pkgName, int lat) {
+        int ret = -1;
+        if (sIopv2 == -1) {
+            sIopv2 = SystemProperties.getInt("vendor.iop.enable_uxe", 0);
+        }
+        try {
             if (sIopv2 == 0 || sUXEngineEvents == null) {
                 return ret;
             }
             Object retVal = sUXEngineEvents.invoke(mPerf, opcode, pid, pkgName, lat);
             ret = (int) retVal;
         } catch (Exception e) {
-            Log.e(TAG, "Exception " + e);
+           if (DEBUG) Log.e(TAG, "Exception " + e);
         }
         return ret;
     }
@@ -371,6 +431,9 @@ public class BoostFramework {
 /** @hide */
     public String perfUXEngine_trigger(int opcode) {
         String ret = null;
+        if (sIopv2 == -1) {
+            sIopv2 = SystemProperties.getInt("vendor.iop.enable_uxe", 0);
+        }
         try {
             if (sIopv2 == 0 || sUXEngineTrigger == null) {
                 return ret;
@@ -378,7 +441,7 @@ public class BoostFramework {
             Object retVal = sUXEngineTrigger.invoke(mPerf, opcode);
             ret = (String) retVal;
         } catch (Exception e) {
-            Log.e(TAG, "Exception " + e);
+           if (DEBUG) Log.e(TAG, "Exception " + e);
         }
         return ret;
     }
