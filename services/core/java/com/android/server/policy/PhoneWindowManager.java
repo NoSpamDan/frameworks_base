@@ -2528,8 +2528,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         if (mPerfBoostDrag == null) {
                             mPerfBoostDrag = new BoostFramework();
                         }
-
-                        if (mPerfBoost == null) {
+                        if (mPerfBoostDrag == null) {
                             Slog.e(TAG, "Error: boost object null");
                             return;
                         }
@@ -2548,7 +2547,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                             mPerfBoostDrag.perfHint(BoostFramework.VENDOR_HINT_DRAG_BOOST,
                                             currentPackage, -1, 1);
                         } else {
-                            mPerfBoost.perfLockRelease();
+                            mPerfBoostDrag.perfLockRelease();
                         }
                     }
 
