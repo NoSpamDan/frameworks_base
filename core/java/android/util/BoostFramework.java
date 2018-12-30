@@ -99,16 +99,6 @@ public class BoostFramework {
     public static final int UXE_EVENT_PKG_UNINSTALL = 7;
     public static final int UXE_EVENT_PKG_INSTALL = 8;
 
-    //UXE Events and Triggers
-    public static final int UXE_TRIGGER = 1;
-    public static final int UXE_EVENT_BINDAPP = 2;
-    public static final int UXE_EVENT_DISPLAYED_ACT = 3;
-    public static final int UXE_EVENT_KILL = 4;
-    public static final int UXE_EVENT_GAME  = 5;
-    public static final int UXE_EVENT_SUB_LAUNCH = 6;
-    public static final int UXE_EVENT_PKG_UNINSTALL = 7;
-    public static final int UXE_EVENT_PKG_INSTALL = 8;
-
     public class Scroll {
         public static final int VERTICAL = 1;
         public static final int HORIZONTAL = 2;
@@ -369,7 +359,7 @@ public class BoostFramework {
         }
         try {
             if (sPerfHintFunc != null) {
-                Object retVal = sPerfHintFunc.invoke(mPerf, hint, userDataStr, userData1, userData2);
+            Object retVal = sUXEngineEvents.invoke(mPerf, opcode, pid, pkgName, lat);
                 ret = (int)retVal;
             }
         } catch(Exception e) {
@@ -377,56 +367,6 @@ public class BoostFramework {
         }
         return ret;
     }
-
-/** @hide */
-    public int perfIOPrefetchStart(int pid, String pkgName, String codePath) {
-        int ret = -1;
-        try {
-            Object retVal = sIOPStart.invoke(mPerf, pid, pkgName, codePath);
-            ret = (int) retVal;
-        } catch (Exception e) {
-           if (DEBUG) Log.e(TAG, "Exception " + e);
-        }
-        try {
-            Object retVal = sUxIOPStart.invoke(mUxPerf, pid, pkgName, codePath);
-            ret = (int) retVal;
-        } catch (Exception e) {
-           if (DEBUG) Log.e(TAG, "Ux Perf Exception " + e);
-        }
-
-        return ret;
-    }
-
-/** @hide */
-    public int perfIOPrefetchStop() {
-        int ret = -1;
-        try {
-            Object retVal = sIOPStop.invoke(mPerf);
-            ret = (int) retVal;
-        } catch (Exception e) {
-           if (DEBUG) Log.e(TAG, "Exception " + e);
-        }
-        return ret;
-    }
-
-/** @hide */
-    public int perfUXEngine_events(int opcode, int pid, String pkgName, int lat) {
-        int ret = -1;
-        if (sIopv2 == -1) {
-            sIopv2 = SystemProperties.getInt("vendor.iop.enable_uxe", 0);
-        }
-        try {
-            if (sIopv2 == 0 || sUXEngineEvents == null) {
-                return ret;
-            }
-            Object retVal = sUXEngineEvents.invoke(mPerf, opcode, pid, pkgName, lat);
-            ret = (int) retVal;
-        } catch (Exception e) {
-           if (DEBUG) Log.e(TAG, "Exception " + e);
-        }
-        return ret;
-    }
-
 
 /** @hide */
     public String perfUXEngine_trigger(int opcode) {
