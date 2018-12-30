@@ -237,8 +237,8 @@ import android.service.dreams.IDreamManager;
 import android.service.vr.IPersistentVrStateCallbacks;
 import android.speech.RecognizerIntent;
 import android.telecom.TelecomManager;
-import android.util.BoostFramework;
 import android.util.ArraySet;
+import android.util.BoostFramework;
 import android.util.DisplayMetrics;
 import android.util.EventLog;
 import android.util.Log;
@@ -480,11 +480,15 @@ public class PhoneWindowManager implements WindowManagerPolicy {
      */
     private final Object mLock = new Object();
 
+    private static final boolean SCROLL_BOOST_SS_ENABLE =
+                    SystemProperties.getBoolean("vendor.perf.gestureflingboost.enable", false);
+
     /*
      * @hide
      */
-    BoostFramework mPerfBoost = null;
-
+    BoostFramework mPerfBoostDrag = null;
+    BoostFramework mPerfBoostFling = null;
+    BoostFramework mPerfBoostPrefling = null;
     Context mContext;
     IWindowManager mWindowManager;
     WindowManagerFuncs mWindowManagerFuncs;
@@ -509,6 +513,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private ScreenshotHelper mScreenshotHelper;
     private boolean mHasFeatureWatch;
     private boolean mHasFeatureLeanback;
+    private boolean mIsPerfBoostFlingAcquired;
 
     // Assigned on main thread, accessed on UI thread
     volatile VrManagerInternal mVrManagerInternal;

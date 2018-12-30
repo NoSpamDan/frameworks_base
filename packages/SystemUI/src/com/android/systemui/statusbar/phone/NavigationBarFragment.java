@@ -850,20 +850,6 @@ Navigator.OnVerticalChangedListener, KeyguardMonitor.Callback, NotificationMedia
         mNavigationBarView.updateNavButtonIcons();
     }
 
-    private void notifyPulseScreenOn(boolean on) {
-        mNavigationBarView.notifyPulseScreenOn(on);
-    }
-
-    private void sendIntentToPulse(Intent intent) {
-        mNavigationBarView.sendIntentToPulse(intent);
-    }
-
-    @Override
-    public void onDetach() {
-        mNavigationBarView.dispose();
-        super.onDetach();
-    }
-
     private void prepareNavigationBarView() {
         mNavigationBarView.reorient();
         if (!isUsingStockNav()) return;

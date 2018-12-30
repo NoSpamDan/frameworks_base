@@ -23,6 +23,7 @@ import android.view.ViewConfiguration;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.util.BoostFramework;
+import android.os.SystemProperties;
 
 /**
  * This class encapsulates scrolling with the ability to overshoot the bounds

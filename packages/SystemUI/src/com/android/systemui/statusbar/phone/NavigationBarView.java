@@ -1404,9 +1404,4 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
     public View getBaseView() {
         return this;
     }
-
-    @Override
-    public void dispose() {
-        removeAllViews();
-    }
 }
