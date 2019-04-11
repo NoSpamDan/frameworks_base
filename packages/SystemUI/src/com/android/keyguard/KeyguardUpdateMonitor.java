@@ -216,6 +216,9 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener {
     private boolean mProximitySensorCovered;
     @VisibleForTesting
     protected boolean mTelephonyCapable;
+    protected boolean mPulsing;
+
+    private boolean mIsKeyguardDone = true;
 
     // Device provisioning state
     private boolean mDeviceProvisioned;
@@ -1884,6 +1887,7 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener {
         callback.onClockVisibilityChanged();
         callback.onKeyguardVisibilityChangedRaw(mKeyguardIsVisible);
         callback.onTelephonyCapable(mTelephonyCapable);
+        callback.onPulsing(mPulsing);
         for (Entry<Integer, SimData> data : mSimDatas.entrySet()) {
             final SimData state = data.getValue();
             callback.onSimStateChanged(state.subId, state.slotId, state.simState);
