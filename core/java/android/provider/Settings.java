@@ -4197,6 +4197,15 @@ public final class Settings {
                 ANY_STRING_VALIDATOR;
 
         /**
+         * @hide
+         */
+        public static final String OMNI_CUSTOM_FP_ICON = "custom_fingerprint_icon";
+
+        /** @hide */
+        private static final Validator OMNI_CUSTOM_FP_ICON_VALIDATOR =
+                ANY_STRING_VALIDATOR;
+
+        /**
          * Enable proxi check for wake keys - must be implemented in a device
          * KeyHandler
          * @hide
@@ -4988,6 +4997,7 @@ public final class Settings {
             VOLUME_KEYS_CONTROL_RING_TONE,
             BUTTON_BACKLIGHT_ON_TOUCH_ONLY,
             OMNI_BUTTON_EXTRA_KEY_MAPPING,
+            OMNI_CUSTOM_FP_ICON,
             OMNI_DEVICE_PROXI_CHECK_ENABLED,
             OMNI_DEVICE_FEATURE_SETTINGS,
             USE_OLD_MOBILETYPE,
@@ -5134,6 +5144,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(VOLUME_KEYS_CONTROL_RING_TONE);
             PRIVATE_SETTINGS.add(BUTTON_BACKLIGHT_ON_TOUCH_ONLY);
             PRIVATE_SETTINGS.add(OMNI_BUTTON_EXTRA_KEY_MAPPING);
+            PRIVATE_SETTINGS.add(OMNI_CUSTOM_FP_ICON);
             PRIVATE_SETTINGS.add(OMNI_DEVICE_PROXI_CHECK_ENABLED);
             PRIVATE_SETTINGS.add(OMNI_DEVICE_FEATURE_SETTINGS);
             PRIVATE_SETTINGS.add(USE_OLD_MOBILETYPE);
@@ -5251,6 +5262,7 @@ public final class Settings {
             VALIDATORS.put(USE_OLD_MOBILETYPE, USE_OLD_MOBILETYPE_VALIDATOR);
             VALIDATORS.put(DISPLAY_CUTOUT_MODE, DISPLAY_CUTOUT_MODE_VALIDATOR);
             VALIDATORS.put(STOCK_STATUSBAR_IN_HIDE, STOCK_STATUSBAR_IN_HIDE_VALIDATOR);
+            VALIDATORS.put(OMNI_CUSTOM_FP_ICON, OMNI_CUSTOM_FP_ICON_VALIDATOR);
         }
 
         /**
