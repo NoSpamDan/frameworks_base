@@ -60,7 +60,7 @@ public class NotificationMediaManager implements Dumpable {
     private MediaController mMediaController;
     private String mMediaNotificationKey;
     private MediaMetadata mMediaMetadata;
-    private final List<MediaUpdateListener> mListeners = new ArrayList<MediaUpdateListener>();
+    private MediaUpdateListener mListener;
 
     private String mNowPlayingNotificationKey;
 
@@ -68,8 +68,8 @@ public class NotificationMediaManager implements Dumpable {
 
     // callback into NavigationFragment for Pulse
     public interface MediaUpdateListener {
-        public default void onMediaUpdated(boolean playing) {}
-        public default void setPulseColors(boolean isColorizedMedia, int[] colors) {}
+        public void onMediaUpdated(boolean playing);
+        public void setPulseColors(boolean isColorizedMEdia, int[] colors);
     }
 
     private final MediaController.Callback mMediaListener = new MediaController.Callback() {
@@ -83,6 +83,9 @@ public class NotificationMediaManager implements Dumpable {
                 if (!isPlaybackActive(state.getState())) {
                     clearCurrentMediaNotification();
                     mPresenter.updateMediaMetaData(true, true);
+                }
+                if (mListener != null) {
+                    mListener.onMediaUpdated(isPlaybackActive(state.getState()));
                 }
                 if (mStatusBar != null) {
                     mStatusBar.getVisualizer().setPlaying(state.getState()
@@ -298,14 +301,6 @@ public class NotificationMediaManager implements Dumpable {
         pw.println();
     }
 
-    public void addCallback(MediaUpdateListener listener) {
-        mListeners.add(listener);
-    }
-
-    public boolean isPlaybackActive() {
-        return isPlaybackActive(getMediaControllerPlaybackState(mMediaController));
-    }
-
     private boolean isPlaybackActive(int state) {
         return state != PlaybackState.STATE_STOPPED && state != PlaybackState.STATE_ERROR
                 && state != PlaybackState.STATE_NONE;
@@ -439,8 +434,8 @@ public class NotificationMediaManager implements Dumpable {
                 setMediaNotificationText(null, false);
             }
 
-            if (!dontPulse) {
-                updateListenersMediaUpdated(true);
+            if (!dontPulse && mListener != null) {
+                mListener.onMediaUpdated(true);
             }
         } else {
             mEntryManager.setEntryToRefresh(null);
@@ -450,11 +445,14 @@ public class NotificationMediaManager implements Dumpable {
         }
     }
 
+
+    public void setMediaNotificationText(String notificationText, boolean nowPlaying) {
+        mPresenter.setAmbientMusicInfo(notificationText, nowPlaying);
+    }
+
     public void setPulseColors(boolean isColorizedMEdia, int[] colors) {
-        for (MediaUpdateListener listener : mListeners) {
-            if (listener != null) {
-                listener.setPulseColors(isColorizedMEdia, colors);
-            }
+        if (mListener != null) {
+            mListener.setPulseColors(isColorizedMEdia, colors);
         }
     }
 
