@@ -825,6 +825,20 @@ public class NavigationBarFragment extends Fragment implements Callbacks,
         mNavigationBarView.updateNavButtonIcons();
     }
 
+    private void notifyPulseScreenOn(boolean on) {
+        mNavigationBarView.notifyPulseScreenOn(on);
+    }
+
+    private void sendIntentToPulse(Intent intent) {
+        mNavigationBarView.sendIntentToPulse(intent);
+    }
+
+    @Override
+    public void onDetach() {
+        mNavigationBarView.dispose();
+        super.onDetach();
+    }
+
     private void prepareNavigationBarView() {
         mNavigationBarView.reorient();
         if (!isUsingStockNav()) return;
@@ -1376,6 +1390,14 @@ public class NavigationBarFragment extends Fragment implements Callbacks,
         return mBarMode == NAVIGATION_MODE_DEFAULT || mScreenPinningEnabled;
     }
 
+    private void notifyPulseScreenOn(boolean on) {
+        mNavigationBarView.notifyPulseScreenOn(on);
+    }
+
+    private void sendIntentToPulse(Intent intent) {
+        mNavigationBarView.sendIntentToPulse(intent);
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -1388,7 +1410,6 @@ public class NavigationBarFragment extends Fragment implements Callbacks,
 
     @Override
     public void onDetach() {
-        mIsAttached = false;
         mNavigationBarView.dispose();
         super.onDetach();
     }

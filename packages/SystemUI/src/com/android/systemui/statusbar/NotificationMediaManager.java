@@ -53,7 +53,7 @@ public class NotificationMediaManager implements Dumpable {
     private final Context mContext;
     private final MediaSessionManager mMediaSessionManager;
 
-    private StatusBar mStatusBar;
+    private final StatusBar mStatusBar;
 
     protected NotificationPresenter mPresenter;
     protected NotificationEntryManager mEntryManager;
@@ -99,13 +99,17 @@ public class NotificationMediaManager implements Dumpable {
             }
             mMediaMetadata = metadata;
             mPresenter.updateMediaMetaData(true, true);
-            setMediaPlaying();
+            if (mListener != null) {
+                setMediaPlaying();
+            }
         }
 
         @Override
         public void onSessionDestroyed() {
             super.onSessionDestroyed();
-            setMediaPlaying();
+            if (mListener != null) {
+                setMediaPlaying();
+            }
         }
     };
 
@@ -241,7 +245,9 @@ public class NotificationMediaManager implements Dumpable {
                 mMediaController = controller;
                 mMediaController.registerCallback(mMediaListener);
                 mMediaMetadata = mMediaController.getMetadata();
-                setMediaPlaying();
+                if (mListener != null) {
+                    setMediaPlaying();
+                }
                 if (DEBUG_MEDIA) {
                     Log.v(TAG, "DEBUG_MEDIA: insert listener, found new controller: "
                             + mMediaController + ", receive metadata: " + mMediaMetadata);
@@ -340,7 +346,9 @@ public class NotificationMediaManager implements Dumpable {
                         + mMediaController.getPackageName());
             }
             mMediaController.unregisterCallback(mMediaListener);
-            setMediaPlaying();
+            if (mListener != null) {
+                setMediaPlaying();
+            }
         }
         mMediaController = null;
     }
@@ -434,24 +442,10 @@ public class NotificationMediaManager implements Dumpable {
             if (!dontPulse) {
                 updateListenersMediaUpdated(true);
             }
-            if (mStatusBar != null && mStatusBar.getVisualizer() != null) {
-                mStatusBar.getVisualizer().setPlaying(true);
-            }
         } else {
-            mEntryManager.setEntryToRefresh(null, true);
-            setMediaNotificationText(null, false);
-            updateListenersMediaUpdated(false);
-        }
-    }
-
-    public void setMediaNotificationText(String notificationText, boolean nowPlaying) {
-        mPresenter.setAmbientMusicInfo(notificationText, nowPlaying);
-    }
-
-    private void updateListenersMediaUpdated(boolean isPlaying) {
-        for (MediaUpdateListener listener : mListeners) {
-            if (listener != null) {
-                listener.onMediaUpdated(isPlaying);
+            mEntryManager.setEntryToRefresh(null);
+            if (mListener != null) {
+                mListener.onMediaUpdated(false);
             }
         }
     }
