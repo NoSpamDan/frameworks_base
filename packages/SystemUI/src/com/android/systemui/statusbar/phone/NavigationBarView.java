@@ -17,15 +17,11 @@
 package com.android.systemui.statusbar.phone;
 
 import static android.view.MotionEvent.ACTION_DOWN;
-import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_DISABLE_QUICK_SCRUB;
-import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_SHOW_OVERVIEW_BUTTON;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_BACK;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_DEAD_ZONE;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_HOME;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_IME_BUTTON;
-import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_OVERVIEW;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_NONE;
-import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_ROTATION;
 
 import android.animation.LayoutTransition;
 import android.animation.LayoutTransition.TransitionListener;
@@ -97,8 +93,12 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.function.Consumer;
 
-public class NavigationBarView extends FrameLayout implements PluginListener<NavGesture>,
-        Navigator, PulseObserver {
+import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_DISABLE_QUICK_SCRUB;
+import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_SHOW_OVERVIEW_BUTTON;
+import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_OVERVIEW;
+import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_ROTATION;
+
+public class NavigationBarView extends FrameLayout implements Navigator, PulseObserver  {
     final static boolean DEBUG = false;
     final static String TAG = "StatusBar/NavBarView";
 
@@ -560,9 +560,10 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
 
     public KeyButtonDrawable getHomeDrawable(Context lightContext, Context darkContext) {
         final boolean quickStepEnabled = mOverviewProxyService.shouldShowSwipeUpUI();
-        KeyButtonDrawable drawable = getDrawable(lightContext, darkContext, quickStepEnabled ? 
-                                                    R.drawable.ic_sysbar_home_quick_step : 
-                                                    R.drawable.ic_sysbar_home);
+        KeyButtonDrawable drawable = quickStepEnabled
+                ? getDrawable(lightContext, darkContext, R.drawable.ic_sysbar_home_quick_step)
+                : getDrawable(lightContext, darkContext, R.drawable.ic_sysbar_home,
+                        false /* hasShadow */);
         orientHomeButton(drawable);
         return drawable;
     }
@@ -773,15 +774,13 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
         return mDt2s;
     }
 
-    @Override
     public void setLayoutTransitionsEnabled(boolean enabled) {
         mLayoutTransitionsEnabled = enabled;
         updateLayoutTransitionsEnabled();
     }
 
-    @Override
     public void setWakeAndUnlocking(boolean wakeAndUnlocking) {
-        setUseFadingAnimations(!wakeAndUnlocking);
+        setUseFadingAnimations(wakeAndUnlocking);
         mWakeAndUnlocking = wakeAndUnlocking;
         updateLayoutTransitionsEnabled();
     }
@@ -1078,7 +1077,6 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
         updateCurrentView();
     }
 
-    @Override
     public boolean needsReorient(int rotation) {
         return mCurrentRotation != rotation;
     }
@@ -1107,11 +1105,12 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
     }
 
     @Override
-    public void setControllers(PulseController pulseController) {
-        mPulse = pulseController;
+    public void setControllers(PulseController pc) {
+        mPulse = pc;
         mPulse.setPulseObserver(this);
     }
 
+    @Override
     public final void setKeyguardShowing(boolean showing) {
         if (mKeyguardShowing != showing) {
             mKeyguardShowing = showing;
@@ -1122,12 +1121,14 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
         }
     }
 
+    @Override
     public final void notifyInflateFromUser() {
         if (mPulse != null) {
             mPulse.notifyScreenOn(true);
         }
     }
 
+    @Override
     public void setLeftInLandscape(boolean leftInLandscape) {
         if (mPulse != null) {
             mPulse.setLeftInLandscape(leftInLandscape);

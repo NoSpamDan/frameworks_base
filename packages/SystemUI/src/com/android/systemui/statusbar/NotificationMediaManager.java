@@ -85,12 +85,13 @@ public class NotificationMediaManager implements Dumpable {
                     mPresenter.updateMediaMetaData(true, true);
                 }
                 if (mListener != null) {
-                    mListener.onMediaUpdated(isPlaybackActive(state.getState()));
+                    setMediaPlaying();
                 }
                 if (mStatusBar != null) {
                     mStatusBar.getVisualizer().setPlaying(state.getState()
                             == PlaybackState.STATE_PLAYING);
                 }
+                setMediaPlaying();
             }
         }
 
@@ -102,17 +103,13 @@ public class NotificationMediaManager implements Dumpable {
             }
             mMediaMetadata = metadata;
             mPresenter.updateMediaMetaData(true, true);
-            if (mListener != null) {
-                setMediaPlaying();
-            }
+            setMediaPlaying();
         }
 
         @Override
         public void onSessionDestroyed() {
             super.onSessionDestroyed();
-            if (mListener != null) {
-                setMediaPlaying();
-            }
+            setMediaPlaying();
         }
     };
 
@@ -122,6 +119,7 @@ public class NotificationMediaManager implements Dumpable {
                 = (MediaSessionManager) mContext.getSystemService(Context.MEDIA_SESSION_SERVICE);
         // TODO: use MediaSessionManager.SessionListener to hook us up to future updates
         // in session state
+
         mStatusBar = SysUiServiceProvider.getComponent(mContext, StatusBar.class);
     }
 
@@ -248,9 +246,7 @@ public class NotificationMediaManager implements Dumpable {
                 mMediaController = controller;
                 mMediaController.registerCallback(mMediaListener);
                 mMediaMetadata = mMediaController.getMetadata();
-                if (mListener != null) {
-                    setMediaPlaying();
-                }
+                setMediaPlaying();
                 if (DEBUG_MEDIA) {
                     Log.v(TAG, "DEBUG_MEDIA: insert listener, found new controller: "
                             + mMediaController + ", receive metadata: " + mMediaMetadata);
@@ -301,6 +297,14 @@ public class NotificationMediaManager implements Dumpable {
         pw.println();
     }
 
+    public void addCallback(MediaUpdateListener listener) {
+        mListener = listener;
+    }
+
+    public boolean isPlaybackActive() {
+        return isPlaybackActive(getMediaControllerPlaybackState(mMediaController));
+    }
+
     private boolean isPlaybackActive(int state) {
         return state != PlaybackState.STATE_STOPPED && state != PlaybackState.STATE_ERROR
                 && state != PlaybackState.STATE_NONE;
@@ -341,9 +345,7 @@ public class NotificationMediaManager implements Dumpable {
                         + mMediaController.getPackageName());
             }
             mMediaController.unregisterCallback(mMediaListener);
-            if (mListener != null) {
-                setMediaPlaying();
-            }
+            setMediaPlaying();
         }
         mMediaController = null;
     }
@@ -393,18 +395,15 @@ public class NotificationMediaManager implements Dumpable {
             final String pkg = mMediaController.getPackageName();
 
             boolean dontPulse = false;
-
-            boolean mediaNotification= false;
-            // check if the app supports new media notifications, if so then set it as entry
-            // to get metadata from
             if (!mBlacklist.isEmpty() && mBlacklist.contains(pkg)) {
                 // don't play Pulse for this app
-                return;
+                dontPulse = true;
             }
 
+            boolean mediaNotification= false;
             for (int i = 0; i < N; i++) {
                 final NotificationData.Entry entry = activeNotifications.get(i);
-                if (isMediaNotification(entry) && entry.notification.getPackageName().equals(pkg)) {
+                if (entry.notification.getPackageName().equals(pkg)) {
                     // NotificationEntryManager onAsyncInflationFinished will get called
                     // when colors and album are loaded for the notification, then we can send
                     // those info to Pulse
@@ -413,22 +412,8 @@ public class NotificationMediaManager implements Dumpable {
                     break;
                 }
             }
-            // the app doesn't support new media notifications but check if
-            // it has an old style notification for this media session, so we can use its
-            // notification title as track info fallback
             if (!mediaNotification) {
-                for (int i = 0; i < N; i++) {
-                    final NotificationData.Entry entry = activeNotifications.get(i);
-                    if  (entry.notification.getPackageName().equals(pkg)) {
-                        mEntryManager.setEntryToRefresh(entry, dontPulse);
-                        mediaNotification = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!mediaNotification) {
-                // no notification for this mediacontroller so no artwork or track info,
+                // no notification for this mediacontroller thus no artwork or track info,
                 // clean up Ambient Music and Pulse albumart color
                 mEntryManager.setEntryToRefresh(null, true);
                 setMediaNotificationText(null, false);
@@ -438,13 +423,13 @@ public class NotificationMediaManager implements Dumpable {
                 mListener.onMediaUpdated(true);
             }
         } else {
-            mEntryManager.setEntryToRefresh(null);
+            mEntryManager.setEntryToRefresh(null, true);
+            setMediaNotificationText(null, false);
             if (mListener != null) {
                 mListener.onMediaUpdated(false);
             }
         }
     }
-
 
     public void setMediaNotificationText(String notificationText, boolean nowPlaying) {
         mPresenter.setAmbientMusicInfo(notificationText, nowPlaying);
