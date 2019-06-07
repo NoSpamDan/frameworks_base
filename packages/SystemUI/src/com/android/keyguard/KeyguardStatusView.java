@@ -22,6 +22,7 @@ import android.app.ActivityManager;
 import android.app.IActivityManager;
 import android.content.Context;
 import android.content.ContentResolver;
+import android.content.res.AccentUtils;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
