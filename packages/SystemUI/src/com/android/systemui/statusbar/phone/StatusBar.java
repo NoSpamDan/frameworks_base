@@ -5058,10 +5058,10 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
     }
 
-         private void setQsRowsColumns() {
-            if (mQSPanel != null) {
-                mQSPanel.updateResources();
-         }
+    private void setQsRowsColumns() {
+        if (mQSPanel != null) {
+            mQSPanel.updateResources();
+        }
     }
 
     private void updateStatusBarColors(boolean enable) {
@@ -5805,6 +5805,12 @@ public class StatusBar extends SystemUI implements DemoMode,
         if (mQSPanel != null) {
             mQSPanel.updateResources();
             setPulseBlacklist();
+        }
+    }
+
+    private void updateQsPanelResources() {
+        if (mQSPanel != null) {
+            mQSPanel.updateResources();
         }
     }
 
