@@ -891,7 +891,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         final Context context = mContext;
         updateDisplaySize(); // populates mDisplayMetrics
         updateResources();
-        updateTheme();
+        updateTheme(themeNeedsRefresh());
 
         inflateStatusBarWindow(context);
         mStatusBarWindow.setService(this);
@@ -2310,7 +2310,7 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     @Override
     public void onColorsChanged(ColorExtractor extractor, int which) {
-        updateTheme();
+        updateTheme(false);
     }
 
     // Check for the dark system theme
@@ -3501,7 +3501,7 @@ public class StatusBar extends SystemUI implements DemoMode,
     public void onConfigChanged(Configuration newConfig) {
         updateResources();
         updateDisplaySize(); // populates mDisplayMetrics
-        updateTheme();
+        updateTheme(false);
 
         if (DEBUG) {
             Log.v(TAG, "configuration changed: " + mContext.getResources().getConfiguration());
@@ -4222,7 +4222,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
 
         mNotificationPanel.setBarState(mState, mKeyguardFadingAway, goingToFullShade);
-        updateTheme();
+        updateTheme(false);
         updateDozingState();
         updatePublicMode();
         updateStackScrollerState(goingToFullShade, fromShadeLocked);
@@ -4249,10 +4249,11 @@ public class StatusBar extends SystemUI implements DemoMode,
         return true;
     }
 
+
     /**
      * Switches theme from light to dark and vice-versa.
      */
-    protected void updateTheme() {
+    protected void updateTheme(boolean themeNeedsRefresh) {
         final boolean inflated = mStackScroller != null && mStatusBarWindowManager != null;
 
         // The system wallpaper defines if QS should be light or dark.
@@ -4272,15 +4273,19 @@ public class StatusBar extends SystemUI implements DemoMode,
 
         final boolean useBlackTheme = userThemeSetting == 3;
 
-        if (themeNeedsRefresh() || isUsingDarkTheme() != useDarkTheme) {
-            unfuckBlackWhiteAccent(); // Check for black and white accent
-            ThemeAccentUtils.setLightDarkTheme(mOverlayManager, mLockscreenUserManager.getCurrentUserId(), useDarkTheme);
+        if (themeNeedsRefresh || isUsingDarkTheme() != useDarkTheme) {
+            mUiOffloadThread.submit(() -> {
+                unfuckBlackWhiteAccent(); // Check for black and white accent
+                ThemeAccentUtils.setLightDarkTheme(mOverlayManager, mLockscreenUserManager.getCurrentUserId(), useDarkTheme);
                 mNotificationPanel.setLockscreenClockTheme(useDarkTheme);
+            });
         }
-        if (themeNeedsRefresh() || isUsingBlackTheme() != useBlackTheme) {
-            unfuckBlackWhiteAccent(); // Check for black and white accent
-            ThemeAccentUtils.setLightBlackTheme(mOverlayManager, mLockscreenUserManager.getCurrentUserId(), useBlackTheme);
+        if (isUsingBlackTheme() != useBlackTheme) {
+            mUiOffloadThread.submit(() -> {
+                unfuckBlackWhiteAccent(); // Check for black and white accent
+                ThemeAccentUtils.setLightBlackTheme(mOverlayManager, mLockscreenUserManager.getCurrentUserId(), useBlackTheme);
                 mNotificationPanel.setLockscreenClockTheme(useDarkTheme);
+            });
         }
 
         // Lock wallpaper defines the color of the majority of the views, hence we'll use it
@@ -4523,7 +4528,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         mStackScroller.setStatusBarState(state);
         updateReportRejectedTouchVisibility();
         updateDozing();
-        updateTheme();
+        updateTheme(false);
         touchAutoDim();
         mNotificationShelf.setStatusBarState(state);
     }
@@ -5055,9 +5060,8 @@ public class StatusBar extends SystemUI implements DemoMode,
 
 
          public void update() {
-            setQsRowsColumns();
-	        setQsPanelOptions();
-            updateTheme();
+            updateResources();
+            updateTheme(false);
 	        setStatusBarWindowViewOptions();
             handleCutout(null);
         }
@@ -5747,7 +5751,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         public void onChange(boolean selfChange, Uri uri) {
             if (uri.equals(Settings.System.getUriFor(
                     Settings.System.SYSTEM_THEME))) {
-                updateTheme();
+                updateTheme(false);
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.ACCENT_PICKER))) {
                 unloadAccents(); // Unload the accents when users request it
@@ -5799,17 +5803,14 @@ public class StatusBar extends SystemUI implements DemoMode,
 
         public void update() {
             setStatusBarWindowViewOptions();
-            updateQsPanelResources();
+            updateResources();
             setLockscreenMediaMetadata();
+            setForceAmbient();
             setHeadsUpStoplist();
             setHeadsUpBlacklist();
-        }
-    }
-
-    private void updateQsPanelResources() {
-        if (mQSPanel != null) {
-            mQSPanel.updateResources();
+            setOldMobileType();
             setPulseBlacklist();
+            updateTheme(false);
         }
     }
 
@@ -5824,16 +5825,18 @@ public class StatusBar extends SystemUI implements DemoMode,
             mStatusBarWindow.setStatusBarWindowViewOptions();
             setForceAmbient();
             updateKeyguardStatusSettings();
-            ContentResolver resolver = mContext.getContentResolver();
-            USE_OLD_MOBILETYPE = Settings.System.getIntForUser(mContext.getContentResolver(),
-                    Settings.System.USE_OLD_MOBILETYPE, 0,
-                    UserHandle.USER_CURRENT) != 0;
-            TelephonyIcons.updateIcons(USE_OLD_MOBILETYPE);
         }
     }
 
     private void updateKeyguardStatusSettings() {
         mNotificationPanel.updateKeyguardStatusSettings();
+    }
+
+    private void setOldMobileType() {
+        USE_OLD_MOBILETYPE = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.USE_OLD_MOBILETYPE, 0,
+                UserHandle.USER_CURRENT) != 0;
+        TelephonyIcons.updateIcons(USE_OLD_MOBILETYPE);
     }
 
     private void setLockscreenMediaMetadata() {
