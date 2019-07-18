@@ -32,8 +32,6 @@ import static com.android.systemui.shared.system.QuickStepContract.ACTION_ENABLE
 import static com.android.systemui.shared.system.QuickStepContract.ACTION_ENABLE_GESTURE_NAV_RESULT;
 import static com.android.systemui.shared.system.QuickStepContract.EXTRA_RESULT_INTENT;
 
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
@@ -191,9 +189,6 @@ public class NavigationModeController implements Dumpable {
         mContext.registerReceiverAsUser(mReceiver, UserHandle.ALL, preferredActivityFilter, null,
                 null);
 
-        // We are only interested in launcher changes, so keeping track of the current default.
-        mLastDefaultLauncher = getDefaultLauncherPackageName(mContext);
-
         updateCurrentInteractionMode(false /* notify */);
 
         // Check if we need to defer enabling gestural nav
@@ -216,21 +211,13 @@ public class NavigationModeController implements Dumpable {
             // Already in gesture mode
             return true;
         }
-        final Boolean supported = isGestureNavSupportedByDefaultLauncher(mCurrentUserContext);
-        if (supported == null || supported) {
-            Log.d(TAG, "Switching system navigation to full-gesture mode:"
-                    + " defaultLauncher="
-                    + getDefaultLauncherPackageName(mCurrentUserContext)
-                    + " contextUser="
-                    + mCurrentUserContext.getUserId());
 
-            setModeOverlay(NAV_BAR_MODE_GESTURAL_OVERLAY, USER_CURRENT);
-            return true;
-        } else {
-            Log.e(TAG, "Gesture nav is not supported for defaultLauncher="
-                    + getDefaultLauncherPackageName(mCurrentUserContext));
-            return false;
-        }
+        Log.d(TAG, "Switching system navigation to full-gesture mode:"
+                + " contextUser="
+                + mCurrentUserContext.getUserId());
+
+        setModeOverlay(NAV_BAR_MODE_GESTURAL_OVERLAY, USER_CURRENT);
+        return true;
     }
 
     private boolean enableGestureNav(Intent intent) {
