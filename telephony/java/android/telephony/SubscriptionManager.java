@@ -2609,6 +2609,10 @@ public class SubscriptionManager {
         if (info == null || info.getAllAccessRules() == null) {
             return false;
         }
+        if (!info.isEmbedded()) {
+            throw new IllegalArgumentException("Not an embedded subscription");
+        }
+
         PackageManager packageManager = mContext.getPackageManager();
         PackageInfo packageInfo;
         try {
