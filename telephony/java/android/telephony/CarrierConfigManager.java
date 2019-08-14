@@ -2657,12 +2657,10 @@ public class CarrierConfigManager {
      * the value is the icon name. Use "None" as the icon name if no icon should be shown in a
      * specific 5G scenario. If the scenario is "None", config can skip this key and value.
      *
-     * Icon name options: "5G_Plus", "5G".
-     *
      * Here is an example:
-     * UE want to display 5G_Plus icon for scenario#1, and 5G icon for scenario#2; otherwise no
+     * UE want to display 5GPlus icon for scenario#1, and 5G icon for scenario#2; otherwise no
      * define.
-     * The configuration is: "connected_mmwave:5G_Plus,connected:5G"
+     * The configuration is: "connected_mmwave:5GPlus,connected:5G"
      *
      * @hide
      */
@@ -3498,7 +3496,7 @@ public class CarrierConfigManager {
         sDefaults.putBoolean(KEY_USE_CALLER_ID_USSD_BOOL, false);
         sDefaults.putInt(KEY_CALL_WAITING_SERVICE_CLASS_INT, 1 /* SERVICE_CLASS_VOICE */);
         sDefaults.putString(KEY_5G_ICON_CONFIGURATION_STRING,
-                "connected_mmwave:None,connected:5G,not_restricted:None,restricted:None");
+                "connected_mmwave:5G,connected:5G");
         sDefaults.putInt(KEY_5G_ICON_DISPLAY_GRACE_PERIOD_SEC_INT, 0);
         sDefaults.putBoolean(KEY_ASCII_7_BIT_SUPPORT_FOR_LONG_MESSAGE_BOOL, false);
         /* Default value is minimum RSRP level needed for SIGNAL_STRENGTH_GOOD */
