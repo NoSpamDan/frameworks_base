@@ -2606,11 +2606,16 @@ public class SubscriptionManager {
      * @hide
      */
     public boolean canManageSubscription(SubscriptionInfo info, String packageName) {
+
         if (info == null || info.getAllAccessRules() == null) {
             return false;
         }
         if (!info.isEmbedded()) {
             throw new IllegalArgumentException("Not an embedded subscription");
+        }
+
+        if (info.getAllAccessRules() == null) {
+            return false;
         }
 
         PackageManager packageManager = mContext.getPackageManager();
