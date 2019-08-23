@@ -209,7 +209,7 @@ public class KeyguardStatusView extends GridLayout implements
         mKeyguardSlice = findViewById(R.id.keyguard_status_area);
         mClockSeparator = findViewById(R.id.clock_separator);
         mVisibleInDoze = Sets.newArraySet(mClockView, mKeyguardSlice, mCustomClockView,
-                mCustomClockView1, mCustomClockView2, mCustomClockView3);
+                mCustomClockView1, mCustomClockView2, mCustomClockView3, mTextClock);
         mTextColor = mClockView.getCurrentTextColor();
 
         int clockStroke = getResources().getDimensionPixelSize(R.dimen.widget_small_font_stroke);
@@ -398,6 +398,8 @@ public class KeyguardStatusView extends GridLayout implements
         } else if (mClockSelection == 4) {
             mClockView.setFormat12Hour(Html.fromHtml("<strong>hh</strong><br>mm"));
             mClockView.setFormat24Hour(Html.fromHtml("<strong>kk</strong><br>mm"));
+        } else if (mClockSelection == 8) {
+            mTextClock.onTimeChanged();
         } else {
             mClockView.setFormat12Hour("hh\nmm");
             mClockView.setFormat24Hour("kk\nmm");

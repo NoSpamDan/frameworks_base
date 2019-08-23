@@ -135,7 +135,7 @@ public class CustomTextClock extends TextView {
         }
     }
 
-    private void onTimeChanged() {
+    public void onTimeChanged() {
         mCalendar.setToNow();
         h24 = DateFormat.is24HourFormat(getContext());
 
