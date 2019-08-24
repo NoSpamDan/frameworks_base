@@ -71,6 +71,7 @@
             <!-- Custom text clock. -->
             <include layout="@layout/text_clock_view" />
 
+            <!-- Custom analog clock type 2 -->
             <com.android.keyguard.clocks.CustomAnalogClock
                 android:id="@+id/custom_clock_view"
                 android:layout_width="wrap_content"
@@ -85,6 +86,8 @@
                 app:custom_hand_hour="@drawable/custom_clock_hand_hour"
                 app:custom_hand_minute="@drawable/custom_clock_hand_minute"
                 app:custom_clock_dial_ambient="@drawable/custom_clock_dial_ambient"/>
+
+            <!-- Custom analog clock type 5 -->
             <com.android.keyguard.clocks.CustomAnalogClock
                 android:id="@+id/custom_clock_view1"
                 android:layout_width="wrap_content"
@@ -98,6 +101,8 @@
                 app:custom_hand_hour="@drawable/custom_clock1_hand_hour"
                 app:custom_hand_minute="@drawable/custom_clock1_hand_minute"
                 app:custom_clock_dial_ambient="@drawable/custom_clock1_dial"/>
+
+            <!-- Custom analog clock type 6 -->
             <com.android.keyguard.clocks.CustomAnalogClock
                 android:id="@+id/custom_clock_view2"
                 android:layout_width="wrap_content"
@@ -111,6 +116,8 @@
                 app:custom_hand_hour="@drawable/custom_clock2_hand_hour"
                 app:custom_hand_minute="@drawable/custom_clock2_hand_minute"
                 app:custom_clock_dial_ambient="@drawable/custom_clock2_dial"/>
+
+            <!-- Custom analog clock type 7 -->
             <com.android.keyguard.clocks.CustomAnalogClock
                 android:id="@+id/custom_clock_view3"
                 android:layout_width="wrap_content"
@@ -124,6 +131,7 @@
                 app:custom_hand_hour="@drawable/custom_clock3_hand_hour"
                 app:custom_hand_minute="@drawable/custom_clock3_hand_minute"
                 app:custom_clock_dial_ambient="@drawable/custom_clock3_dial"/>
+
             <View
                 android:id="@+id/clock_separator"
                 android:layout_width="@dimen/widget_separator_width"
