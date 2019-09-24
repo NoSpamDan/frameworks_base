@@ -446,6 +446,10 @@ public class NotificationPanelView extends PanelView implements
             @Override
             public boolean onDoubleTap(MotionEvent e) {
                 CandyUtils.switchScreenOff(context);
+                PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+                if(pm != null) {
+                    pm.goToSleep(e.getEventTime());
+                }
                 return true;
             }
         });
@@ -550,9 +554,9 @@ public class NotificationPanelView extends PanelView implements
         mShelfHeight = getResources().getDimensionPixelSize(R.dimen.notification_shelf_height);
         mDarkIconSize = getResources().getDimensionPixelSize(
                 R.dimen.status_bar_icon_drawing_size_dark);
-        int statusbarHeight = getResources().getDimensionPixelSize(
+        mStatusBarHeaderHeight = getResources().getDimensionPixelSize(
                 com.android.internal.R.dimen.status_bar_height);
-        mHeadsUpInset = statusbarHeight + getResources().getDimensionPixelSize(
+        mHeadsUpInset = mStatusBarHeaderHeight + getResources().getDimensionPixelSize(
                 R.dimen.heads_up_status_bar_padding);
     }
 
@@ -1197,6 +1201,11 @@ public class NotificationPanelView extends PanelView implements
         // pull down QS or expand the shade.
         if (mStatusBar.isBouncerShowingScrimmed()) {
             return false;
+        }
+        if (!mQsExpanded
+                && mDoubleTapToSleepEnabled
+                && event.getY() < mStatusBarHeaderHeight) {
+            mDoubleTapGesture.onTouchEvent(event);
         }
 
         if (!mQsExpanded
@@ -3473,4 +3482,9 @@ public class NotificationPanelView extends PanelView implements
     public void updateDoubleTapToSleep(boolean doubleTapToSleepEnabled) {
         mDoubleTapToSleepEnabled = doubleTapToSleepEnabled;
     }
+
+    public void updateDoubleTapToSleep(boolean doubleTapToSleepEnabled) {
+        mDoubleTapToSleepEnabled = doubleTapToSleepEnabled;
+    }
+
 }

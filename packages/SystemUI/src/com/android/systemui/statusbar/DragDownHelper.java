@@ -84,6 +84,10 @@ public class DragDownHelper implements Gefingerpoken {
             @Override
             public void run() {
                 CandyUtils.switchScreenOff(context);
+                PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+                if(pm != null) {
+                    pm.goToSleep(mLastDownEvent);
+                }
             }
         };
     }
@@ -305,6 +309,10 @@ public class DragDownHelper implements Gefingerpoken {
          * @return if drag down is enabled anywhere, not just on selected views.
          */
         boolean isDragDownAnywhereEnabled();
+    }
+
+    public void updateDoubleTapToSleep(boolean updateDoubleTapToSleep) {
+        mDoubleTapToSleepEnabled = updateDoubleTapToSleep;
     }
 
     public void updateDoubleTapToSleep(boolean updateDoubleTapToSleep) {
