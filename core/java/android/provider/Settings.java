@@ -4604,6 +4604,20 @@ public final class Settings {
         public static final String CUSTOM_AMBIENT_TILT_GESTURE = "custom_ambient_tilt_gesture";
 
         /**
+         * Whether to enable DOZE only when charging
+         * @hide
+         */
+        public static final String DOZE_ON_CHARGE = "doze_on_charge";
+
+        private static final Validator DOZE_ON_CHARGE_VALIDATOR = BOOLEAN_VALIDATOR;
+
+        /**
+         * hidden stting of the current atate of DOZE only when charging
+         * @hide
+         */
+        public static final String DOZE_ON_CHARGE_NOW = "doze_on_charge_now";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -4670,6 +4684,7 @@ public final class Settings {
             NOTIFICATION_LIGHT_PULSE,
             ENABLE_CONDITIONS,
             ENABLE_SUGGESTIONS
+            DOZE_ON_CHARGE,
         };
 
         /**
@@ -4798,6 +4813,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(DISPLAY_COLOR_MODE);
             PRIVATE_SETTINGS.add(ENABLE_CONDITIONS);
             PRIVATE_SETTINGS.add(ENABLE_SUGGESTIONS);
+            PRIVATE_SETTINGS.add(DOZE_ON_CHARGE);
         }
 
         /**
@@ -4893,6 +4909,7 @@ public final class Settings {
             VALIDATORS.put(NOTIFICATION_LIGHT_PULSE, BOOLEAN_VALIDATOR);
             VALIDATORS.put(ENABLE_CONDITIONS, ENABLE_CONDITIONS_VALIDATOR);
             VALIDATORS.put(ENABLE_SUGGESTIONS, ENABLE_SUGGESTIONS_VALIDATOR);
+            VALIDATORS.put(DOZE_ON_CHARGE, DOZE_ON_CHARGE_VALIDATOR);
         }
 
         /**
