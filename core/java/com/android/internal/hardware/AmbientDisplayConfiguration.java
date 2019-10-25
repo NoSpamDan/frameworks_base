@@ -40,7 +40,7 @@ public class AmbientDisplayConfiguration {
                 || pulseOnDoubleTapEnabled(user)
                 || pulseOnLongPressEnabled(user)
                 || pulseOnCustomDozeEventEnabled(user)
-                || pulseOnMedia(user)
+               // || pulseOnMedia(user)
                 || alwaysOnEnabled(user);
     }
 
@@ -64,18 +64,18 @@ public class AmbientDisplayConfiguration {
         return ambientDisplayAvailable();
     }
 
-    public boolean pulseOnMedia(int user) {
+   /* public boolean pulseOnMedia(int user) {
         boolean enabled = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.FORCE_AMBIENT_FOR_MEDIA, 1, user) != 0;
         return enabled && ambientDisplayAvailable();
-    }
+    }*/
 
-    public boolean canForceDozeNotifications() {
+    /*public boolean canForceDozeNotifications() {
         return mContext.getResources().getBoolean(R.bool.config_canForceDozeNotifications);
-    }
+    }*/
 
     public boolean pulseOnPickupEnabled(int user) {
-        boolean settingEnabled = boolSettingDefaultOn(Settings.Secure.DOZE_PULSE_ON_PICK_UP, user);
+        boolean settingEnabled = boolSettingDefaultOn(Settings.Secure.DOZE_PICK_UP_GESTURE , user);
         return (settingEnabled || alwaysOnEnabled(user)) && pulseOnPickupAvailable();
     }
 
@@ -92,7 +92,7 @@ public class AmbientDisplayConfiguration {
     }
 
     public boolean pulseOnDoubleTapEnabled(int user) {
-        return boolSettingDefaultOn(Settings.Secure.DOZE_PULSE_ON_DOUBLE_TAP, user)
+        return boolSettingDefaultOn(Settings.Secure.DOZE_DOUBLE_TAP_GESTURE , user)
                 && pulseOnDoubleTapAvailable();
     }
 
