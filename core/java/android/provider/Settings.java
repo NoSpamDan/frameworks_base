@@ -4683,7 +4683,7 @@ public final class Settings {
             ALARM_ALERT,
             NOTIFICATION_LIGHT_PULSE,
             ENABLE_CONDITIONS,
-            ENABLE_SUGGESTIONS
+            ENABLE_SUGGESTIONS,
             DOZE_ON_CHARGE,
         };
 

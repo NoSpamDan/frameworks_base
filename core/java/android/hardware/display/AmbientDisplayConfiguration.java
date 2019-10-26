@@ -55,6 +55,11 @@ public class AmbientDisplayConfiguration {
     }
 
     /** {@hide} */
+    public boolean available() {
+        return pulseOnNotificationAvailable();
+    }
+
+    /** {@hide} */
     public boolean pulseOnNotificationEnabled(int user) {
         return boolSettingDefaultOn(Settings.Secure.DOZE_ENABLED, user)
                 && pulseOnNotificationAvailable();
