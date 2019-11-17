@@ -1198,37 +1198,44 @@ public class NotificationPanelView extends PanelView implements
         if (mStatusBar.isBouncerShowingScrimmed()) {
             return false;
         }
+
         if (!mQsExpanded
                 && mDoubleTapToSleepEnabled
                 && event.getY() < mStatusBarHeaderHeight) {
             mDoubleTapGesture.onTouchEvent(event);
         }
-        if (mIsLockscreenDoubleTapEnabled
+
+        if (mIsLockscreenDoubleTapEnabled && !mPulsing && !mDozing
                 && mBarState == StatusBarState.KEYGUARD) {
             mLockscreenDoubleTapToSleep.onTouchEvent(event);
         }
+
         // Make sure the next touch won't the blocked after the current ends.
         if (event.getAction() == MotionEvent.ACTION_UP
                 || event.getAction() == MotionEvent.ACTION_CANCEL) {
             mBlockingExpansionForCurrentTouch = false;
         }
+
         // When touch focus transfer happens, ACTION_DOWN->ACTION_UP may happen immediately
         // without any ACTION_MOVE event.
         // In such case, simply expand the panel instead of being stuck at the bottom bar.
         if (mLastEventSynthesizedDown && event.getAction() == MotionEvent.ACTION_UP) {
             expand(true /* animate */);
         }
+
         initDownStates(event);
         if (!mIsExpanding && !shouldQuickSettingsIntercept(mDownX, mDownY, 0)
                 && mPulseExpansionHandler.onTouchEvent(event)) {
             // We're expanding all the other ones shouldn't get this anymore
             return true;
         }
+
         if (mListenForHeadsUp && !mHeadsUpTouchHelper.isTrackingHeadsUp()
                 && mHeadsUpTouchHelper.onInterceptTouchEvent(event)) {
             mIsExpansionFromHeadsUp = true;
             MetricsLogger.count(mContext, COUNTER_PANEL_OPEN_PEEK, 1);
         }
+
         boolean handled = false;
         if ((!mIsExpanding || mHintAnimationRunning)
                 && !mQsExpanded
