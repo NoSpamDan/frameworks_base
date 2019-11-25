@@ -92,4 +92,8 @@
     <java-symbol type="bool" name="config_hasAlertSlider" />
 	<java-symbol type="integer" name="config_alertSliderLocation" />
 
+    <!-- Custom app chooser -->
+    <java-symbol type="string" name="group_applications" />
+    <java-symbol type="string" name="select_custom_app_title" />
+
 </resources>
