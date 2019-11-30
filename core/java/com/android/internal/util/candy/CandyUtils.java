@@ -42,6 +42,11 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.SystemClock;
+<<<<<<< HEAD:core/java/com/android/internal/util/candy/CandyUtils.java
+=======
+import android.os.SystemProperties;
+import android.text.TextUtils;
+>>>>>>> 00d1c318ca9c... Utils: Update notch check logic:core/java/com/android/internal/util/aosip/aosipUtils.java
 import android.util.DisplayMetrics;
 import android.view.DisplayInfo;
 import android.view.InputDevice;
@@ -233,23 +238,13 @@ public class CandyUtils {
             pm.goToSleep(SystemClock.uptimeMillis());
         }
     }
-   // Check if device has a notch
+
+    // Check if device has a notch
     public static boolean hasNotch(Context context) {
-        int result = 0;
-        int resid;
-        int resourceId = context.getResources().getIdentifier(
-                "status_bar_height", "dimen", "android");
-        resid = context.getResources().getIdentifier("config_fillMainBuiltInDisplayCutout",
-                "bool", "android");
-        if (resid > 0) {
-            return context.getResources().getBoolean(resid);
-        }
-        if (resourceId > 0) {
-            result = context.getResources().getDimensionPixelSize(resourceId);
-        }
-        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-        float px = 24 * (metrics.densityDpi / 160f);
-        return result > Math.round(px);
+        String displayCutout = context.getResources().getString(R.string.config_mainBuiltInDisplayCutout);
+        boolean maskDisplayCutout = context.getResources().getBoolean(R.bool.config_maskMainBuiltInDisplayCutout);
+        boolean displayCutoutExists = (!TextUtils.isEmpty(displayCutout) && !maskDisplayCutout);
+        return displayCutoutExists;
     }
 
     // Clear notifications
