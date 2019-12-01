@@ -119,4 +119,5 @@ interface IStatusBarService
      * Candy
      */
     void toggleCameraFlash();
+    void setPartialScreenshot(boolean active);
 }

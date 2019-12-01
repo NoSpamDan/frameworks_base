@@ -82,6 +82,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.internal.messages.nano.SystemMessageProto.SystemMessage;
+import com.android.internal.util.candy.CandyUtils;
 import com.android.systemui.R;
 import com.android.systemui.SysUiServiceProvider;
 import com.android.systemui.SystemUI;
@@ -535,7 +536,6 @@ class GlobalScreenshot {
 
     private MediaActionSound mCameraSound;
 
-
     /**
      * @param context everything needs a context :(
      */
@@ -663,7 +663,9 @@ class GlobalScreenshot {
     void takeScreenshotPartial(final Runnable finisher, final boolean statusBarVisible,
             final boolean navBarVisible) {
         mWindowManager.addView(mScreenshotLayout, mWindowLayoutParams);
-        mScreenshotSelectorView.setOnTouchListener(new View.OnTouchListener() {
+        CandyUtils.setPartialScreenshot(true);
+        mScreenshotSelectorView.setSelectionListener(
+                new ScreenshotSelectorView.OnSelectionListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 ScreenshotSelectorView view = (ScreenshotSelectorView) v;
@@ -704,6 +706,18 @@ class GlobalScreenshot {
                 mScreenshotSelectorView.requestFocus();
             }
         });
+        mScreenshotLayout.post(() -> {
+            mScreenshotSelectorView.setVisibility(View.VISIBLE);
+            mScreenshotSelectorView.requestFocus();
+        });
+    }
+
+    void hideScreenshotSelector() {
+        CandyUtils.setPartialScreenshot(false);
+        mWindowManager.removeView(mScreenshotLayout);
+        mScreenshotSelectorView.stopSelection();
+        mScreenshotSelectorView.setVisibility(View.GONE);
+        mCaptureButton.setVisibility(View.GONE);
     }
 
     /**
@@ -718,6 +732,8 @@ class GlobalScreenshot {
             } catch (IllegalArgumentException ignored) {
             }
         }
+        // called when unbinding screenshot service
+        CandyUtils.setPartialScreenshot(false);
     }
 
     /**

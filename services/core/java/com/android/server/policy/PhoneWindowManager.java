@@ -6056,6 +6056,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     // Notifications
     private void toggleNotifications() {
         performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, true, "Notifications");
-        aosipUtils.toggleNotifications();
+        CandyUtils.toggleNotifications();
     }
 }
