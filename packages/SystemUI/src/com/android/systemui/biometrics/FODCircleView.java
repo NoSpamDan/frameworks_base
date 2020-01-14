@@ -85,6 +85,8 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
     private boolean mIsCircleShowing;
     private boolean mIsAuthenticated;
 
+    private float mCurrentDimAmount = 0.0f;
+
     private Handler mHandler;
 
     private Timer mBurnInProtectionTimer;
