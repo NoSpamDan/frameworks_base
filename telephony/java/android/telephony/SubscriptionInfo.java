@@ -620,23 +620,6 @@ public class SubscriptionInfo implements Parcelable {
         if (mCarrierConfigAccessRules != null) {
             merged.addAll(Arrays.asList(mCarrierConfigAccessRules));
         }
-        if (mNativeAccessRules == null) return null;
-        return Arrays.asList(mNativeAccessRules);
-    }
-
-    /**
-     * @return the {@link UiccAccessRule}s that are both stored on Uicc and in carrierConfigs
-     * dictating who is authorized to manage this subscription.
-     * @hide
-     */
-    public @Nullable List<UiccAccessRule> getAllAccessRules() {
-        List<UiccAccessRule> merged = new ArrayList<>();
-        if (mNativeAccessRules != null) {
-            merged.addAll(getAccessRules());
-        }
-        if (mCarrierConfigAccessRules != null) {
-            merged.addAll(Arrays.asList(mCarrierConfigAccessRules));
-        }
         return merged.isEmpty() ? null : merged;
     }
 
