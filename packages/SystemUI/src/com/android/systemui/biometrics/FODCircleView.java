@@ -571,6 +571,8 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
         mIsShowing = true;
         mIsAuthenticated = false;
 
+        updatePosition();
+
         dispatchShow();
         setVisibility(View.VISIBLE);
     }
