@@ -213,6 +213,7 @@ import com.android.internal.policy.IShortcutService;
 import com.android.internal.policy.PhoneWindow;
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.util.ArrayUtils;
+import com.android.internal.util.candy.CandyUtils;
 import com.android.server.ExtconStateObserver;
 import com.android.server.ExtconUEventObserver;
 import com.android.server.GestureLauncherService;
@@ -6016,4 +6017,39 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
     }
 
+    private void scheduleLongPressKeyEvent(int keyCode) {
+        Message msg = mHandler.obtainMessage(MSG_DISPATCH_VOLKEY_SKIP_TRACK, keyCode, 0);
+        msg.setAsynchronous(true);
+        mHandler.sendMessageDelayed(msg, ViewConfiguration.getLongPressTimeout());
+    }
+
+    // Flashlight
+    private void toggleFlashLight() {
+        performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, true, "Flashlight toggle");
+        CandyUtils.toggleCameraFlash();
+    }
+
+    // Clear notifications
+    private void toggleClearNotifications() {
+        performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, true, "Clear-all notifications");
+        CandyUtils.clearAllNotifications();
+    }
+
+    // Volume panel
+    private void toggleVolumePanel() {
+        performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, true, "Volume panel");
+        CandyUtils.toggleVolumePanel(mContext);
+    }
+
+    // Screen off
+    private void toggleScreenOff() {
+        performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, true, "Screen off");
+        CandyUtils.switchScreenOff(mContext);
+    }
+
+    // Screenshot
+    private void toggleScreenshot() {
+        performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, true, "Screenshot");
+        CandyUtils.takeScreenshot(true);
+    }
 }

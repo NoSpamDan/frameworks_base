@@ -16,6 +16,10 @@
 
 package com.android.internal.util.candy;
 
+import android.Manifest;
+import android.app.ActivityManager;
+import android.app.ActivityManagerNative;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -240,5 +244,96 @@ public class CandyUtils {
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
         float px = 24 * (metrics.densityDpi / 160f);
         return result > Math.round(px);
+    }
+
+    // Clear notifications
+    public static void clearAllNotifications() {
+        IStatusBarService service = getStatusBarService();
+        if (service != null) {
+            try {
+                service.onClearAllNotifications(ActivityManager.getCurrentUser());
+            } catch (RemoteException e) {
+                // do nothing.
+            }
+        }
+    }
+
+    // Screen on
+    public static void switchScreenOn(Context context) {
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        if (pm == null) return;
+        pm.wakeUp(SystemClock.uptimeMillis(), "com.android.systemui:CAMERA_GESTURE_PREVENT_LOCK");
+    }
+
+    // Volume panel
+    public static void toggleVolumePanel(Context context) {
+        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        am.adjustVolume(AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI);
+    }
+
+    // Method to toggle flashlight
+    public static boolean deviceHasFlashlight(Context ctx) {
+        return ctx.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+    }
+    public static void toggleCameraFlash() {
+        FireActions.toggleCameraFlash();
+    }
+    private static final class FireActions {
+        private static IStatusBarService mStatusBarService = null;
+        private static IStatusBarService getStatusBarService() {
+            synchronized (FireActions.class) {
+                if (mStatusBarService == null) {
+                    mStatusBarService = IStatusBarService.Stub.asInterface(
+                            ServiceManager.getService("statusbar"));
+                }
+                return mStatusBarService;
+            }
+        }
+        public static void toggleCameraFlash() {
+            IStatusBarService service = getStatusBarService();
+            if (service != null) {
+                try {
+                    service.toggleCameraFlash();
+                } catch (RemoteException e) {
+                    // do nothing.
+                }
+            }
+        }
+    }
+
+    // Method to check if task is in lock task mode
+    public static boolean isInLockTaskMode() {
+        try {
+            return ActivityManagerNative.getDefault().isInLockTaskMode();
+        } catch (RemoteException e) {
+            return false;
+        }
+    }
+
+    public static boolean deviceHasCompass(Context ctx) {
+        SensorManager sm = (SensorManager) ctx.getSystemService(Context.SENSOR_SERVICE);
+        return sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null
+                && sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null;
+    }
+
+    public static void setComponentState(Context context, String packageName,
+            String componentClassName, boolean enabled) {
+        PackageManager pm  = context.getApplicationContext().getPackageManager();
+        ComponentName componentName = new ComponentName(packageName, componentClassName);
+        int state = enabled ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+        pm.setComponentEnabledSetting(componentName, state, PackageManager.DONT_KILL_APP);
+    }
+
+    // Clear notifications
+    public static void clearAllNotifications() {
+        IStatusBarService service = getStatusBarService();
+        if (service != null) {
+            try {
+                service.onClearAllNotifications(ActivityManager.getCurrentUser());
+            } catch (RemoteException e) {
+                // do nothing.
+            }
+        }
     }
 }
