@@ -6576,6 +6576,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case NavbarUtilities.KEY_ACTION_SCREENSHOT:
                 toggleScreenshot();
                 break;
+            case NavbarUtilities.KEY_ACTION_NOTIFICATIONS:
+                toggleNotifications();
+                break;
         }
     }
 
@@ -6661,5 +6664,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private void toggleScreenshot() {
         performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, true, "Screenshot");
         aosipUtils.takeScreenshot(true);
+    }
+
+    // Notifications
+    private void toggleNotifications() {
+        performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, true, "Notifications");
+        aosipUtils.toggleNotifications();
     }
 }
