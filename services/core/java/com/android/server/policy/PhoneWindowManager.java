@@ -797,6 +797,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     mWindowManagerFuncs.moveDisplayToTop(msg.arg1);
                     mMovingDisplayToTopKeyTriggered = false;
                     break;
+                case MSG_TOGGLE_TORCH:
+                    performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, true, "Flashlight toggle");
+                    CandyUtils.toggleCameraFlash();
+                    break;
                 case MSG_DISPATCH_VOLKEY_SKIP_TRACK: {
                     sendSkipTrackEventToStatusBar(msg.arg1);
                     mVolumeMusicControlActive = true;
@@ -6571,28 +6575,28 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 NavbarUtilities.toggleSplitScreen();
                 break;
             case NavbarUtilities.KEY_ACTION_FLASHLIGHT:
-                aosipUtils.toggleCameraFlash();
+                CandyUtils.toggleCameraFlash();
                 break;
             case NavbarUtilities.KEY_ACTION_CLEAR_NOTIFICATIONS:
-                aosipUtils.clearAllNotifications();
+                CandyUtils.clearAllNotifications();
                 break;
             case NavbarUtilities.KEY_ACTION_VOLUME_PANEL:
-                aosipUtils.toggleVolumePanel(mContext);
+                CandyUtils.toggleVolumePanel(mContext);
                 break;
             case NavbarUtilities.KEY_ACTION_SCREEN_OFF:
-                aosipUtils.switchScreenOff(mContext);
+                CandyUtils.switchScreenOff(mContext);
                 break;
             case NavbarUtilities.KEY_ACTION_NOTIFICATIONS:
-                aosipUtils.toggleNotifications();
+                CandyUtils.toggleNotifications();
                 break;
             case NavbarUtilities.KEY_ACTION_POWER_MENU:
                 triggerVirtualKeypress(KeyEvent.KEYCODE_POWER, false, true);
                 break;
             case NavbarUtilities.KEY_ACTION_SCREENSHOT:
-                aosipUtils.takeScreenshot(true);
+                CandyUtils.takeScreenshot(true);
                 break;
             case NavbarUtilities.KEY_ACTION_QS_PANEL:
-                aosipUtils.toggleQsPanel();
+                CandyUtils.toggleQsPanel();
                 break;
             case NavbarUtilities.KEY_ACTION_CUSTOM_APP:
                 switch (keyCode) {
@@ -6614,7 +6618,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 }
                 break;
             case NavbarUtilities.KEY_ACTION_RINGER_MODES:
-                aosipUtils.toggleRingerModes(mContext);
+                CandyUtils.toggleRingerModes(mContext);
                 break;
         }
     }
@@ -6657,28 +6661,28 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 NavbarUtilities.toggleSplitScreen();
                 break;
             case NavbarUtilities.KEY_ACTION_FLASHLIGHT:
-                aosipUtils.toggleCameraFlash();
+                CandyUtils.toggleCameraFlash();
                 break;
             case NavbarUtilities.KEY_ACTION_CLEAR_NOTIFICATIONS:
-                aosipUtils.clearAllNotifications();
+                CandyUtils.clearAllNotifications();
                 break;
             case NavbarUtilities.KEY_ACTION_VOLUME_PANEL:
-                aosipUtils.toggleVolumePanel(mContext);
+                CandyUtils.toggleVolumePanel(mContext);
                 break;
             case NavbarUtilities.KEY_ACTION_SCREEN_OFF:
-                aosipUtils.switchScreenOff(mContext);
+                CandyUtils.switchScreenOff(mContext);
                 break;
             case NavbarUtilities.KEY_ACTION_NOTIFICATIONS:
-                aosipUtils.toggleNotifications();
+                CandyUtils.toggleNotifications();
                 break;
             case NavbarUtilities.KEY_ACTION_POWER_MENU:
                 triggerVirtualKeypress(KeyEvent.KEYCODE_POWER, false, true);
                 break;
             case NavbarUtilities.KEY_ACTION_SCREENSHOT:
-                aosipUtils.takeScreenshot(true);
+                CandyUtils.takeScreenshot(true);
                 break;
             case NavbarUtilities.KEY_ACTION_QS_PANEL:
-                aosipUtils.toggleQsPanel();
+                CandyUtils.toggleQsPanel();
                 break;
             case NavbarUtilities.KEY_ACTION_CUSTOM_APP:
                 switch (keyCode) {
@@ -6700,7 +6704,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 }
                 break;
             case NavbarUtilities.KEY_ACTION_RINGER_MODES:
-                aosipUtils.toggleRingerModes(mContext);
+                CandyUtils.toggleRingerModes(mContext);
                 break;
         }
     }
