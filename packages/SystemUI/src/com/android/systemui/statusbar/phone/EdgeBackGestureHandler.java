@@ -484,6 +484,75 @@ public class EdgeBackGestureHandler implements DisplayListener {
         }
     }
 
+    public void triggerAction(boolean isLeftPanel) {
+        int action = isLeftPanel ? mLeftLongSwipeAction : mRightLongSwipeAction;
+        switch (action) {
+            case 0: // No action
+            default:
+                break;
+            case 1: // Assistant
+                mAssistManager.startAssist(new Bundle() /* args */);
+                break;
+            case 2: // Voice search
+                CandyUtils.launchVoiceSearch(mContext);
+                break;
+            case 3: // Camera
+                CandyUtils.launchCamera(mContext);
+                break;
+            case 4: // Flashlight
+                CandyUtils.toggleCameraFlash();
+                break;
+            case 5: // Application
+                launchApp(mContext, isLeftPanel);
+                break;
+            case 6: // Volume panel
+                CandyUtils.toggleVolumePanel(mContext);
+                break;
+            case 7: // Screen off
+                CandyUtils.switchScreenOff(mContext);
+                break;
+            case 8: // Screenshot
+                CandyUtils.takeScreenshot(true);
+                break;
+            case 9: // Notification panel
+                CandyUtils.toggleNotifications();
+                break;
+            case 10: // QS panel
+                CandyUtils.toggleQsPanel();
+                break;
+            case 11: // Clear notifications
+                CandyUtils.clearAllNotifications();
+                break;
+            case 12: // Ringer modes
+                CandyUtils.toggleRingerModes(mContext);
+                break;
+        }
+    }
+
+    private void launchApp(Context context, boolean isLeftPanel) {
+        Intent intent = null;
+        String packageName = Settings.System.getStringForUser(context.getContentResolver(),
+                isLeftPanel ? Settings.System.LEFT_LONG_BACK_SWIPE_APP_ACTION
+                : Settings.System.RIGHT_LONG_BACK_SWIPE_APP_ACTION,
+                UserHandle.USER_CURRENT);
+        String activity = Settings.System.getStringForUser(context.getContentResolver(),
+                isLeftPanel ? Settings.System.LEFT_LONG_BACK_SWIPE_APP_ACTIVITY_ACTION
+                : Settings.System.RIGHT_LONG_BACK_SWIPE_APP_ACTIVITY_ACTION,
+                UserHandle.USER_CURRENT);
+        boolean launchActivity = activity != null && !TextUtils.equals("NONE", activity);
+        try {
+            if (launchActivity) {
+                intent = new Intent(Intent.ACTION_MAIN);
+                intent.setClassName(packageName, activity);
+            } else {
+                intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
+            }
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            context.startActivity(intent);
+        } catch (Exception e) {
+        }
+    }
+
     private void updateEdgePanelPosition(float touchY) {
         float position = touchY - mFingerOffset;
         position = Math.max(position, mMinArrowPosition);
