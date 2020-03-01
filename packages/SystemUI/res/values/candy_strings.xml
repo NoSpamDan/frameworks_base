@@ -60,4 +60,7 @@
 
     <string name="statusbar_items_title">Statusbar icon</string>
 
+    <!-- Kill app API -->
+    <string name="recents_app_killed">App killed</string>
+    <string name="nope_cant_kill">Launcher cannot be killed</string>
 </resources>
