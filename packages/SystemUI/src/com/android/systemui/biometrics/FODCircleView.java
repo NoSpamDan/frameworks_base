@@ -29,7 +29,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.PowerManager;
 import android.os.RemoteException;
 import android.provider.Settings;
 import android.view.Display;
@@ -72,16 +71,12 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
 
     private boolean mIsBouncer;
     private boolean mIsDreaming;
-
     private boolean mIsKeyguard;
     private boolean mIsShowing;
     private boolean mIsCircleShowing;
     private boolean mIsAuthenticated;
 
     private Handler mHandler;
-
-    private PowerManager mPowerManager;
-    private PowerManager.WakeLock mWakeLock;
 
     private Timer mBurnInProtectionTimer;
 
@@ -114,9 +109,6 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
                 }
             } else if (mBurnInProtectionTimer != null) {
                 mBurnInProtectionTimer.cancel();
-                if (mWakeLock.isHeld()) {
-                    mWakeLock.release();
-                }
             }
         }
 
@@ -203,12 +195,10 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
         mUpdateMonitor = KeyguardUpdateMonitor.getInstance(context);
         mUpdateMonitor.registerCallback(mMonitorCallback);
 
+
         updateCutoutFlags();
 
         Dependency.get(ConfigurationController.class).addCallback(this);
-        mPowerManager = context.getSystemService(PowerManager.class);
-        mWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                FODCircleView.class.getSimpleName());
     }
 
     @Override
@@ -217,17 +207,6 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
 
         if (mIsCircleShowing) {
             canvas.drawCircle(mSize / 2, mSize / 2, mSize / 2.0f, mPaintFingerprint);
-        }
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-
-        if (mIsCircleShowing) {
-            dispatchPress();
-        } else {
-            dispatchRelease();
         }
     }
 
@@ -318,7 +297,6 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
 
         setKeepScreenOn(true);
 
-        if (mIsDreaming) mWakeLock.acquire(500);
         setDim(true);
         updateAlpha();
         dispatchPress();
@@ -332,6 +310,8 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
 
         setImageResource(R.drawable.fod_icon_default);
         invalidate();
+
+        dispatchRelease();
 
         setDim(false);
         updateAlpha();
