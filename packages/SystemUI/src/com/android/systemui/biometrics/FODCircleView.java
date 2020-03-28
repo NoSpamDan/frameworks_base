@@ -36,10 +36,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
-import android.hardware.biometrics.BiometricSourceType;
+
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.hardware.biometrics.BiometricSourceType;
+import android.hardware.fingerprint.FingerprintManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.UserHandle;
@@ -151,6 +153,7 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
         }
     };
 
+    private FingerprintManager mFingerprintManager;
     private KeyguardUpdateMonitor mUpdateMonitor;
 
     private KeyguardUpdateMonitorCallback mMonitorCallback = new KeyguardUpdateMonitorCallback() {
@@ -233,6 +236,34 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
         }
     };
 
+    private void dispatchFodScreenStateChanged(boolean interactive){
+        dispatchFodFingerprintHasEnrolledFinger();
+        if (mFodScreenOffHandler != null){
+            mFodScreenOffHandler.onScreenStateChanged(interactive);
+        }
+    }
+
+    private void dispatchFodFingerprintRunningStateChanged(boolean running){
+        if (mFodScreenOffHandler != null){
+            mFodScreenOffHandler.onFingerprintRunningStateChanged(running);
+        }
+    }
+
+    private void dispatchFodDreamingStateChanged(){
+        if (mFodScreenOffHandler != null){
+            mFodScreenOffHandler.onDreamingStateChanged(mIsDreaming);
+        }
+    }
+
+    private void dispatchFodFingerprintHasEnrolledFinger(){
+        if (mFodScreenOffHandler != null &&
+                mFingerprintManager != null && 
+                mFingerprintManager.isHardwareDetected()) {
+            boolean enrolled = mFingerprintManager.hasEnrolledFingerprints(UserHandle.myUserId());
+            mFodScreenOffHandler.hasEnrolledFingerprints(enrolled);
+        }
+    }
+
     private boolean canUnlockWithFp() {
         int currentUser = ActivityManager.getCurrentUser();
         boolean biometrics = mUpdateMonitor.isUnlockingWithBiometricsPossible(currentUser);
@@ -253,30 +284,13 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
         return true;
     }
 
-    private void dispatchFodScreenStateChanged(boolean interactive){
-        if (mFodScreenOffHandler != null){
-            mFodScreenOffHandler.onScreenStateChanged(interactive);
-        }
-    }
-
-    private void dispatchFodFingerprintRunningStateChanged(boolean running){
-        if (mFodScreenOffHandler != null){
-            mFodScreenOffHandler.onFingerprintRunningStateChanged(running);
-        }
-    }
-
-    private void dispatchFodDreamingStateChanged(){
-        if (mFodScreenOffHandler != null){
-            mFodScreenOffHandler.onDreamingStateChanged(mIsDreaming);
-        }
-    }
-
     private boolean mCutoutMasked;
     private int mStatusbarHeight;
 
     public FODCircleView(Context context, FodScreenOffHandler fodScreenOffHandler) {
         super(context);
 
+        mFingerprintManager = (FingerprintManager) context.getSystemService(Context.FINGERPRINT_SERVICE);
         mFodScreenOffHandler = fodScreenOffHandler;
 
         setScaleType(ScaleType.CENTER);
