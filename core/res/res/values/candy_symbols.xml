@@ -82,4 +82,6 @@
     <!-- Class name of screen off fod handler -->
     <java-symbol type="string" name="config_fodScreenOffHandlerClass" />
 
+    <!-- In-display Fingerprint -->
+    <java-symbol type="bool" name="config_supportsInDisplayFingerprint" />
 </resources>
