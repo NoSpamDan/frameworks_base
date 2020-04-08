@@ -16,10 +16,14 @@
 
 package com.android.internal.util.candy;
 
+<<<<<<< HEAD
 import android.Manifest;
 import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
 import android.content.ComponentName;
+=======
+import android.app.ActivityManagerNative;
+>>>>>>> 17c61497ebca... Move power menu methods to our Utils class
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
