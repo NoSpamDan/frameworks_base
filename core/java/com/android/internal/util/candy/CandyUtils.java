@@ -16,14 +16,10 @@
 
 package com.android.internal.util.candy;
 
-<<<<<<< HEAD
 import android.Manifest;
 import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
 import android.content.ComponentName;
-=======
-import android.app.ActivityManagerNative;
->>>>>>> 17c61497ebca... Move power menu methods to our Utils class
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -34,6 +30,9 @@ import android.content.res.Resources;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
+import android.hardware.fingerprint.FingerprintManager;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.net.ConnectivityManager;
 import android.os.BatteryManager;
 import android.os.UserHandle;
