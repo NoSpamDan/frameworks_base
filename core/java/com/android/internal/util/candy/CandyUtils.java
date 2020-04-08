@@ -33,6 +33,7 @@ import android.hardware.camera2.CameraManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.os.BatteryManager;
 import android.os.UserHandle;
@@ -231,7 +232,7 @@ public class CandyUtils {
     // Method to turn off the screen
     public static void switchScreenOff(Context ctx) {
         PowerManager pm = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
-        if (pm!= null) {
+        if (pm!= null && pm.isScreenOn()) {
             pm.goToSleep(SystemClock.uptimeMillis());
         }
     }
@@ -260,7 +261,15 @@ public class CandyUtils {
     public static void switchScreenOn(Context context) {
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         if (pm == null) return;
-        pm.wakeUp(SystemClock.uptimeMillis(), "com.android.systemui:CAMERA_GESTURE_PREVENT_LOCK");
+        PowerManager.WakeLock wakeLock = pm.newWakeLock((
+                PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
+                        PowerManager.ACQUIRE_CAUSES_WAKEUP), "wakeup:device");
+        boolean isScreenOn = pm.isScreenOn();
+        /* Wake up the device only when screen is off.
+         * Otherwise don't bother to do anything. */
+        if (!wakeLock.isHeld() && !isScreenOn) {
+            wakeLock.acquire();
+        }
     }
 
     // Volume panel
