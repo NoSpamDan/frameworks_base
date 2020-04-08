@@ -50,6 +50,9 @@ import android.view.WindowManagerGlobal;
 
 import android.util.DisplayMetrics;
 
+import com.android.internal.R;
+import com.android.internal.statusbar.IStatusBarService;
+
 import java.util.Locale;
 
 public class CandyUtils {
