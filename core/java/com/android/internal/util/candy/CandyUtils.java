@@ -42,11 +42,8 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.SystemClock;
-<<<<<<< HEAD:core/java/com/android/internal/util/candy/CandyUtils.java
-=======
 import android.os.SystemProperties;
 import android.text.TextUtils;
->>>>>>> 00d1c318ca9c... Utils: Update notch check logic:core/java/com/android/internal/util/aosip/aosipUtils.java
 import android.util.DisplayMetrics;
 import android.view.DisplayInfo;
 import android.view.InputDevice;
