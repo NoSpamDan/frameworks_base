@@ -6039,12 +6039,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
     }
 
-    private void scheduleLongPressKeyEvent(int keyCode) {
-        Message msg = mHandler.obtainMessage(MSG_DISPATCH_VOLKEY_SKIP_TRACK, keyCode, 0);
-        msg.setAsynchronous(true);
-        mHandler.sendMessageDelayed(msg, ViewConfiguration.getLongPressTimeout());
-    }
-
     // Flashlight
     private void toggleFlashLight() {
         performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, true, "Flashlight toggle");

@@ -477,9 +477,9 @@ public class GlobalActionsDialog implements DialogInterface.OnDismissListener,
                     mItems.add(getSettingsAction());
                 }
             } else if (GLOBAL_ACTION_KEY_LOCKDOWN.equals(actionKey)) {
-                if (Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.GLOBAL_ACTIONS_LOCKDOWN, 0) != 0) {
-                        && shouldDisplayLockdown() && !CandyUtils.isInLockTaskMode()) {
+                if ((Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.GLOBAL_ACTIONS_LOCKDOWN, 0) != 0
+                                && shouldDisplayLockdown() && !CandyUtils.isInLockTaskMode())) {
                     mItems.add(getLockdownAction());
                     mHasLockdownButton = true;
                 }
