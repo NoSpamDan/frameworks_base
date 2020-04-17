@@ -35,10 +35,6 @@
         android:title="@string/quick_settings_cast_title" />
 
     <com.android.systemui.tuner.StatusBarSwitch
-        android:key="zen"
-        android:title="@string/quick_settings_dnd_label" />
-
-    <com.android.systemui.tuner.StatusBarSwitch
         android:key="ethernet"
         android:title="@string/status_bar_ethernet" />
 
@@ -74,11 +70,6 @@
     <com.android.systemui.tuner.StatusBarSwitch
         android:key="wifi"
         android:title="@string/quick_settings_wifi_label" />
-
-    <com.android.systemui.tuner.BatteryPreference
-        android:title="@string/battery"
-        android:summary="%s"
-        android:entries="@array/battery_options" />
 
     <com.android.systemui.tuner.TunerSwitch
         android:key="low_priority"
