@@ -3310,7 +3310,15 @@ public class AudioService extends IAudioService.Stub
                 hdlr = h;
                 // Remove from client list so that it is re-inserted at top of list
                 iter.remove();
-                hdlr.getBinder().unlinkToDeath(hdlr, 0);
+                try {
+                    hdlr.getBinder().unlinkToDeath(hdlr, 0);
+                    if (cb != hdlr.getBinder()){
+                        hdlr = null;
+                    }
+                } catch (NoSuchElementException e) {
+                    hdlr = null;
+                    Log.w(TAG, "link does not exist ...");
+                }
                 break;
             }
         }
@@ -5757,8 +5765,7 @@ public class AudioService extends IAudioService.Stub
                         UserManager.DISALLOW_RECORD_AUDIO, false, userId);
             } else if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
                 state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
-                if (state == BluetoothAdapter.STATE_OFF ||
-                        state == BluetoothAdapter.STATE_TURNING_OFF) {
+                if (state == BluetoothAdapter.STATE_OFF) {
                     mDeviceBroker.disconnectAllBluetoothProfiles();
                 }
             } else if (action.equals(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION) ||
@@ -6602,7 +6609,7 @@ public class AudioService extends IAudioService.Stub
                 return false;
             }
             boolean suppress = false;
-            if (resolvedStream == DEFAULT_VOL_STREAM_NO_PLAYBACK && mController != null) {
+            if (resolvedStream != AudioSystem.STREAM_MUSIC && mController != null) {
                 final long now = SystemClock.uptimeMillis();
                 if ((flags & AudioManager.FLAG_SHOW_UI) != 0 && !mVisible) {
                     // ui will become visible
