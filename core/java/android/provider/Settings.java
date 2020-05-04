@@ -4813,13 +4813,6 @@ public final class Settings {
         private static final Validator BATTERY_LIGHT_LOW_BLINKING_VALIDATOR =
                 BOOLEAN_VALIDATOR;
 
-        /** @hide */
-        public static final String BACK_GESTURE_HEIGHT = "back_gesture_height";
-
-        /** @hide */
-        private static final Validator BACK_GESTURE_HEIGHT_VALIDATOR =
-                ANY_INTEGER_VALIDATOR;
-
         /**
          * QS battery estimate
          * 0: Hide the battery estimate
@@ -5273,7 +5266,6 @@ public final class Settings {
             DOZE_ON_CHARGE,
             CANDY_CUSTOM_FP_ICON,
             GESTURE_PILL_TOGGLE,
-            BACK_GESTURE_HEIGHT,
             STATUS_BAR_CLOCK,
             STATUSBAR_CLOCK_STYLE,
             STATUS_BAR_CLOCK_SECONDS,
@@ -5440,7 +5432,6 @@ public final class Settings {
             PRIVATE_SETTINGS.add(DOZE_ON_CHARGE);
             PRIVATE_SETTINGS.add(CANDY_CUSTOM_FP_ICON);
             PRIVATE_SETTINGS.add(GESTURE_PILL_TOGGLE);
-            PRIVATE_SETTINGS.add(BACK_GESTURE_HEIGHT);
             PRIVATE_SETTINGS.add(SHOW_VOLTE_ICON);
             PRIVATE_SETTINGS.add(VOLTE_ICON_STYLE);
             PRIVATE_SETTINGS.add(STATUS_BAR_CLOCK);
@@ -5561,7 +5552,6 @@ public final class Settings {
             VALIDATORS.put(DOZE_ON_CHARGE, DOZE_ON_CHARGE_VALIDATOR);
             VALIDATORS.put(CANDY_CUSTOM_FP_ICON, CANDY_CUSTOM_FP_ICON_VALIDATOR);
             VALIDATORS.put(GESTURE_PILL_TOGGLE, GESTURE_PILL_TOGGLE_VALIDATOR);
-            VALIDATORS.put(BACK_GESTURE_HEIGHT, BACK_GESTURE_HEIGHT_VALIDATOR);
             VALIDATORS.put(SHOW_VOLTE_ICON, SHOW_VOLTE_ICON_VALIDATOR);
             VALIDATORS.put(VOLTE_ICON_STYLE, VOLTE_ICON_STYLE_VALIDATOR);
             VALIDATORS.put(STATUS_BAR_CLOCK, STATUS_BAR_CLOCK_VALIDATOR);
