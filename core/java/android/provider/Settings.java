@@ -4564,7 +4564,6 @@ public final class Settings {
                 ANY_STRING_VALIDATOR;
 
         /**
-         * Disable hw buttons - actions, brightness, haptic feedback, overflow menu
          * @hide
          */
         public static final String GLOBAL_ACTIONS_LIST = "global_actions_list";
@@ -4962,12 +4961,6 @@ public final class Settings {
          */
         public static final String DOZE_TRIGGER_DOUBLETAP = "doze_trigger_doubletap";
 
-        /** @hide */
-        public static final String GESTURE_PILL_TOGGLE = "gesture_pill_toggle";
-
-        /** @hide */
-        private static final Validator GESTURE_PILL_TOGGLE_VALIDATOR = BOOLEAN_VALIDATOR;
-
         /**
          * FOD recognizing animation picker
          * @hide
@@ -5265,7 +5258,6 @@ public final class Settings {
             BATTERY_LIGHT_REALLYFULL_COLOR,
             DOZE_ON_CHARGE,
             CANDY_CUSTOM_FP_ICON,
-            GESTURE_PILL_TOGGLE,
             STATUS_BAR_CLOCK,
             STATUSBAR_CLOCK_STYLE,
             STATUS_BAR_CLOCK_SECONDS,
@@ -5431,7 +5423,6 @@ public final class Settings {
             PRIVATE_SETTINGS.add(FORCE_FULLSCREEN_CUTOUT_APPS);
             PRIVATE_SETTINGS.add(DOZE_ON_CHARGE);
             PRIVATE_SETTINGS.add(CANDY_CUSTOM_FP_ICON);
-            PRIVATE_SETTINGS.add(GESTURE_PILL_TOGGLE);
             PRIVATE_SETTINGS.add(SHOW_VOLTE_ICON);
             PRIVATE_SETTINGS.add(VOLTE_ICON_STYLE);
             PRIVATE_SETTINGS.add(STATUS_BAR_CLOCK);
@@ -5551,7 +5542,6 @@ public final class Settings {
             VALIDATORS.put(FORCE_FULLSCREEN_CUTOUT_APPS, FORCE_FULLSCREEN_CUTOUT_APPS_VALIDATOR);
             VALIDATORS.put(DOZE_ON_CHARGE, DOZE_ON_CHARGE_VALIDATOR);
             VALIDATORS.put(CANDY_CUSTOM_FP_ICON, CANDY_CUSTOM_FP_ICON_VALIDATOR);
-            VALIDATORS.put(GESTURE_PILL_TOGGLE, GESTURE_PILL_TOGGLE_VALIDATOR);
             VALIDATORS.put(SHOW_VOLTE_ICON, SHOW_VOLTE_ICON_VALIDATOR);
             VALIDATORS.put(VOLTE_ICON_STYLE, VOLTE_ICON_STYLE_VALIDATOR);
             VALIDATORS.put(STATUS_BAR_CLOCK, STATUS_BAR_CLOCK_VALIDATOR);
