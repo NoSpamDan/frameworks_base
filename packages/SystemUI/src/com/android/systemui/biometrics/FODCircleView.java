@@ -262,8 +262,6 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
 
         Dependency.get(ConfigurationController.class).addCallback(this);
         mPowerManager = context.getSystemService(PowerManager.class);
-        mWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                FODCircleView.class.getSimpleName());
 
         mFODAnimation = new FODAnimation(context, mPositionX, mPositionY);
     }
@@ -338,17 +336,6 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
             setImageResource(R.drawable.fod_icon_pressed_white);
         } else if (mFODPressedState == 2) {
             setImageDrawable(null);
-        }
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-
-        if (mIsCircleShowing) {
-            dispatchPress();
-        } else {
-            dispatchRelease();
         }
     }
 
@@ -445,11 +432,8 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
 
         setKeepScreenOn(true);
 
-        if (mIsDreaming) {
-            mWakeLock.acquire(300);
-        }
-
         setWallpaperColor(false);
+
         setDim(true);
         updateAlpha();
 
@@ -463,6 +447,8 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
         setImageResource(ICON_STYLES[mSelectedIcon]);
         setWallpaperColor(true);
         invalidate();
+
+        dispatchRelease();
 
         setDim(false);
         updateAlpha();
