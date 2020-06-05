@@ -37,7 +37,6 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.UserHandle;
 import android.os.Looper;
-import android.os.PowerManager;
 import android.os.RemoteException;
 import android.provider.Settings;
 import android.view.Display;
@@ -87,9 +86,6 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
     private boolean mIsAuthenticated;
 
     private Handler mHandler;
-
-    private PowerManager mPowerManager;
-    private PowerManager.WakeLock mWakeLock;
 
     private Timer mBurnInProtectionTimer;
     private WallpaperManager mWallManager;
@@ -261,9 +257,18 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
         updateCutoutFlags();
 
         Dependency.get(ConfigurationController.class).addCallback(this);
-        mPowerManager = context.getSystemService(PowerManager.class);
 
         mFODAnimation = new FODAnimation(context, mPositionX, mPositionY);
+
+        getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            float drawingDimAmount = mParams.dimAmount;
+            if (mCurrentDimAmount == 0.0f && drawingDimAmount > 0.0f) {
+                dispatchPress();
+                mCurrentDimAmount = drawingDimAmount;
+            } else if (mCurrentDimAmount > 0.0f && drawingDimAmount == 0.0f) {
+                mCurrentDimAmount = drawingDimAmount;
+            }
+        });
     }
 
     private CustomSettingsObserver mCustomSettingsObserver = new CustomSettingsObserver(mHandler);
