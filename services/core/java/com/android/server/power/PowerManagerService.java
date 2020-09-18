@@ -605,6 +605,17 @@ public final class PowerManagerService extends SystemService
         }
     }
 
+    // Button brightness suppport
+    private boolean mButtonBrightnessSupport = false;
+    private int mCurrentButtonBrightness = 0;
+    private int mCustomButtonBrightness = -1;
+    private boolean mButtonUseScreenBrightness = true;
+    private boolean mButtonBacklightEnable = true;
+    private boolean mButtonBacklightOnTouchOnly;
+    private int mButtonTimeout;
+    private boolean mButtonTimeoutEnabled;
+    private int mEvent;
+
     /**
      * All times are in milliseconds. These constants are kept synchronized with the system
      * global Settings. Any access to this class or its fields should be done while
@@ -1005,9 +1016,6 @@ public final class PowerManagerService extends SystemService
             resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.FORCE_SHOW_NAVBAR),
                     false, mSettingsObserver, UserHandle.USER_ALL);
-            /*resolver.registerContentObserver(
-                    Settings.Secure.getUriFor(Settings.Secure.HARDWARE_KEYS_DISABLE),
-                    false, mSettingsObserver, UserHandle.USER_ALL);*/
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.BUTTON_BACKLIGHT_TIMEOUT),
                     false, mSettingsObserver, UserHandle.USER_ALL);
@@ -5226,6 +5234,43 @@ public final class PowerManagerService extends SystemService
         if (mProximityListener != null) {
             mSensorManager.unregisterListener(mProximityListener);
             mProximityListener = null;
+        }
+    }
+
+    private void updateButtonLightSettings() {
+        final ContentResolver resolver = mContext.getContentResolver();
+        if (mButtonBrightnessSupport){
+            mCustomButtonBrightness = Settings.System.getIntForUser(
+                    mContext.getContentResolver(), Settings.System.CUSTOM_BUTTON_BRIGHTNESS,
+                    mCustomButtonBrightness, UserHandle.USER_CURRENT);
+            mButtonUseScreenBrightness = Settings.System.getIntForUser(
+                    mContext.getContentResolver(), Settings.System.CUSTOM_BUTTON_USE_SCREEN_BRIGHTNESS,
+                    0, UserHandle.USER_CURRENT) != 0;
+            mButtonBacklightEnable = Settings.System.getIntForUser(
+                    mContext.getContentResolver(), Settings.System.BUTTON_BACKLIGHT_ENABLE,
+                    1, UserHandle.USER_CURRENT) != 0;
+            boolean navbarEnabled = Settings.System.getIntForUser(
+                    mContext.getContentResolver(), Settings.System.FORCE_SHOW_NAVBAR,
+                    0, UserHandle.USER_CURRENT) != 0;
+            mButtonBacklightEnable = mButtonBacklightEnable && !navbarEnabled;
+            mButtonBacklightOnTouchOnly = Settings.System.getIntForUser(
+                    mContext.getContentResolver(), Settings.System.BUTTON_BACKLIGHT_ON_TOUCH_ONLY,
+                    0, UserHandle.USER_CURRENT) != 0;
+            mButtonTimeout = Settings.System.getIntForUser(resolver,
+                    Settings.System.BUTTON_BACKLIGHT_TIMEOUT,
+                    0, UserHandle.USER_CURRENT) * 1000;
+
+            mButtonTimeoutEnabled = mButtonTimeout != 0 && mButtonBacklightEnable;
+            // prevent remaining timout to be triggered
+            mHandler.removeMessages(MSG_BUTTON_TIMEOUT);
+            // force it off - it will come back if needed later
+            updateButtonLight(true);
+        }
+    }
+
+    private void updateButtonLight(boolean timeoutEvent) {
+        if (mDisplayPowerRequest == null){
+            return;
         }
     }
 
