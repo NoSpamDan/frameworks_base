@@ -797,10 +797,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     mWindowManagerFuncs.moveDisplayToTop(msg.arg1);
                     mMovingDisplayToTopKeyTriggered = false;
                     break;
-                case MSG_TOGGLE_TORCH:
-                    performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, true, "Flashlight toggle");
-                    CandyUtils.toggleCameraFlash();
-                    break;
                 case MSG_DISPATCH_VOLKEY_SKIP_TRACK: {
                     sendSkipTrackEventToStatusBar(msg.arg1);
                     mVolumeMusicControlActive = true;

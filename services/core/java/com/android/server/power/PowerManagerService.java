@@ -5237,43 +5237,6 @@ public final class PowerManagerService extends SystemService
         }
     }
 
-    private void updateButtonLightSettings() {
-        final ContentResolver resolver = mContext.getContentResolver();
-        if (mButtonBrightnessSupport){
-            mCustomButtonBrightness = Settings.System.getIntForUser(
-                    mContext.getContentResolver(), Settings.System.CUSTOM_BUTTON_BRIGHTNESS,
-                    mCustomButtonBrightness, UserHandle.USER_CURRENT);
-            mButtonUseScreenBrightness = Settings.System.getIntForUser(
-                    mContext.getContentResolver(), Settings.System.CUSTOM_BUTTON_USE_SCREEN_BRIGHTNESS,
-                    0, UserHandle.USER_CURRENT) != 0;
-            mButtonBacklightEnable = Settings.System.getIntForUser(
-                    mContext.getContentResolver(), Settings.System.BUTTON_BACKLIGHT_ENABLE,
-                    1, UserHandle.USER_CURRENT) != 0;
-            boolean navbarEnabled = Settings.System.getIntForUser(
-                    mContext.getContentResolver(), Settings.System.FORCE_SHOW_NAVBAR,
-                    0, UserHandle.USER_CURRENT) != 0;
-            mButtonBacklightEnable = mButtonBacklightEnable && !navbarEnabled;
-            mButtonBacklightOnTouchOnly = Settings.System.getIntForUser(
-                    mContext.getContentResolver(), Settings.System.BUTTON_BACKLIGHT_ON_TOUCH_ONLY,
-                    0, UserHandle.USER_CURRENT) != 0;
-            mButtonTimeout = Settings.System.getIntForUser(resolver,
-                    Settings.System.BUTTON_BACKLIGHT_TIMEOUT,
-                    0, UserHandle.USER_CURRENT) * 1000;
-
-            mButtonTimeoutEnabled = mButtonTimeout != 0 && mButtonBacklightEnable;
-            // prevent remaining timout to be triggered
-            mHandler.removeMessages(MSG_BUTTON_TIMEOUT);
-            // force it off - it will come back if needed later
-            updateButtonLight(true);
-        }
-    }
-
-    private void updateButtonLight(boolean timeoutEvent) {
-        if (mDisplayPowerRequest == null){
-            return;
-        }
-    }
-
     private void runWithProximityCheck(final Runnable r) {
         if (mHandler.hasMessages(MSG_WAKE_UP)) {
             // A message is already queued
@@ -5342,13 +5305,10 @@ public final class PowerManagerService extends SystemService
             mButtonBacklightEnable = Settings.System.getIntForUser(
                     mContext.getContentResolver(), Settings.System.BUTTON_BACKLIGHT_ENABLE,
                     1, UserHandle.USER_CURRENT) != 0;
-
-            /*boolean hardwareKeysDisable = Settings.Secure.getIntForUser(
-                    mContext.getContentResolver(), Settings.Secure.HARDWARE_KEYS_DISABLE,
+            boolean navbarEnabled = Settings.System.getIntForUser(
+                    mContext.getContentResolver(), Settings.System.FORCE_SHOW_NAVBAR,
                     0, UserHandle.USER_CURRENT) != 0;
-
-            mButtonBacklightEnable = mButtonBacklightEnable && !hardwareKeysDisable;*/
-
+            mButtonBacklightEnable = mButtonBacklightEnable && !navbarEnabled;
             mButtonBacklightOnTouchOnly = Settings.System.getIntForUser(
                     mContext.getContentResolver(), Settings.System.BUTTON_BACKLIGHT_ON_TOUCH_ONLY,
                     0, UserHandle.USER_CURRENT) != 0;
