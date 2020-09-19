@@ -443,4 +443,24 @@ public class CandyUtils {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
+
+    // Check if gesture navbar is enabled
+    public static boolean isGestureNavbar() {
+        return CandyUtils.isThemeEnabled("com.android.internal.systemui.navbar.gestural")
+                || CandyUtils.isThemeEnabled("com.android.internal.systemui.navbar.gestural_extra_wide_back")
+                || CandyUtils.isThemeEnabled("com.android.internal.systemui.navbar.gestural_narrow_back")
+                || CandyUtils.isThemeEnabled("com.android.internal.systemui.navbar.gestural_wide_back");
+    }
+
+    public static boolean isOlderPixelDevice() {
+        String deviceName = android.os.Build.DEVICE;
+            return ("crosshatch".equals(deviceName) || "blueline".equals(deviceName)
+                    || "taimen".equals(deviceName) || "walleye".equals(deviceName)
+                    || "bonito".equals(deviceName) || "sargo".equals(deviceName));
+    }
+
+    public static boolean isNewerPixelDevice() {
+        String deviceName = android.os.Build.DEVICE;
+            return ("coral".equals(deviceName) || "flame".equals(deviceName));
+    }
 }
