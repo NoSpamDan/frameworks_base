@@ -235,6 +235,17 @@ oneway interface IStatusBar
      * Candy custom stuffs
      */
     void toggleCameraFlash();
+<<<<<<< HEAD
 
     void killForegroundApp();
+=======
+<<<<<<< HEAD
+=======
+
+    void killForegroundApp();
+
+    void screenPinningStateChanged(boolean enabled);
+    void leftInLandscapeChanged(boolean isLeft);
+>>>>>>> 7b554409ef1... base: Pulse initial checkin for Android 11 [1/4]
+>>>>>>> 7013c59d31b... base: Pulse initial checkin for Android 11 [1/4]
 }
