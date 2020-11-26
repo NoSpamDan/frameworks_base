@@ -1831,7 +1831,7 @@ public class GlobalActionsDialog implements DialogInterface.OnDismissListener,
                     | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                     | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
                     | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
-            window.setType(WindowManager.LayoutParams.TYPE_VOLUME_OVERLAY);
+            window.setType(WindowManager.LayoutParams.TYPE_DISPLAY_OVERLAY);
             setTitle(R.string.global_actions);
 
             mPanelController = plugin;
