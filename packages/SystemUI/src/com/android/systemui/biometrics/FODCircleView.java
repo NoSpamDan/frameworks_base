@@ -84,7 +84,6 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
     private boolean mIsBiometricRunning;
     private boolean mIsCircleShowing;
     private boolean mIsDreaming;
-    private boolean mIsKeyguard;
 
     private boolean mIsKeyguard;
 
@@ -112,7 +111,7 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
     private KeyguardUpdateMonitor mUpdateMonitor;
 
     private KeyguardUpdateMonitorCallback mMonitorCallback = new KeyguardUpdateMonitorCallback() {
-        @Override
+
         public void onBiometricAuthenticated(int userId, BiometricSourceType biometricSourceType,
                 boolean isStrongBiometric) {
             // We assume that if biometricSourceType matches Fingerprint it will be
@@ -122,7 +121,6 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
             }
         }
 
-        @Override
         public void onBiometricRunningStateChanged(boolean running,
                 BiometricSourceType biometricSourceType) {
             if (biometricSourceType == BiometricSourceType.FINGERPRINT) {
@@ -399,7 +397,7 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
             return;
         }
 
-        if (mUpdateMonitor.getUserCanSkipBouncer(mUpdateMonitor.getCurrentUser())) {
+        if (mIsKeyguard && mUpdateMonitor.getUserCanSkipBouncer(mUpdateMonitor.getCurrentUser())) {
             // Ignore show calls if user can skip bouncer
             return;
         }
